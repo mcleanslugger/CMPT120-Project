@@ -4,7 +4,7 @@
 
 def main():
     playerName = input("What is your name?")
-    print("Hello " + playerName + "! Welcome to Five Nights at Freddies!")
+    print("Hello " + playerName + "! Welcome to It Part 2!")
     playerLocation = "You are outside an abandoned house, late on Halloween night. You went there looking for your friends who ran off ahead of you."
     print(playerLocation)
     
@@ -12,6 +12,7 @@ def main():
         input("Press Enter to continue")
         print("=================================================")
         print("")
+        
     pressEnter()
     
     print("You shout your friends's names.")
@@ -25,7 +26,7 @@ def main():
     print("The door opens and you walk into a dark, dingy main foyer. You see stairs leading upstairs to your left.")
     print("Around the corner to your right, you see stairs leading down to the basement.")
     pressEnter()
-
+    
     
 
 
