@@ -2,15 +2,17 @@
 ##Author: David Siegel
 ##Version: 0.1
 
+import math
 playerName = input("What is your name?")
 print("Hello " + playerName + "! Welcome to Five Nights at Freddies!")
-print("You are outside an abandoned house, late on Halloween night. You went there looking for your friends who ran off ahead of you.")
+playerLocation = "You are outside an abandoned house, late on Halloween night. You went there looking for your friends who ran off ahead of you."
+print(playerLocation)
 def giveInstruction():{
-    print("Choose an action from the list bellow:")
+    print("Please press enter")
     }
 giveInstruction()
 print("1. Shout your friends's names.")
-x = eval(input("?"))
+x = int(input("?"))
 print("=================================================")
 
 if (x == 1):
