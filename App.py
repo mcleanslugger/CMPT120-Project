@@ -13,16 +13,13 @@ def main():
     print("  | | | __| |  ___/ _` | '__| __|   / / ")
     print(" _| |_| |_  | |  | (_| | |  | |_   / /_ ")
     print("|_____|\__| |_|   \__,_|_|   \__| |____|")
-    print()
-    print("By: David Siegel")
-    print()
+    print("\nBy: David Siegel\n")
     
     def showScore():
         print("Your score is", main.playerScore)
     showScore()
 
     def pressEnter():
-        print()
         input("Press Enter to continue")
         main.playerScore = main.playerScore + 5
         print("=================================================")
@@ -44,8 +41,7 @@ def main():
     print(playerLocation3)
     pressEnter()
     print(playerLocation4)
-    print("THE END")
-    print()
+    print("\nTHE END\n")
     print("(c) 2017 David Siegel, idruless@gmail.com")
     
 main()
