@@ -2,79 +2,79 @@
 ##Author: David Siegel
 ##Version: 0.1
 
-playerLocation = ""
-playerName = input("What is your name? ")
-playerScore = 0
-playerLocationStart  = ("You are outside an abandoned house, late on Halloween night. "
-                        "You went there looking for your friends who ran off ahead of you.")
-playerLocation1      = ("You move to the front door and try to open it... "
-                        "The door opens and you walk into a dark, dingy main foyer. "
-                        "You see stairs leading upstairs to your left. Around the corner "
-                        "to your right, you see stairs leading down to the basement.")
-playerLocation2      = ("You turn left and go upstairs. The stairs creak as you walk up them. "
-                        "When you reach the top of the stairs, you see 3 doors going down the hall; "
-                        "2 on your left, 1 on your right. You open the first door on your left.")
-playerLocation3      = ("The door is unlocked and you enter the room. It is completely empty except "
-                        "for one picture on the wall facing the door. You move closer, and you see it's "
-                        "a clown holding a red balloon, yet something is off about the clown. Just as you "
-                        "are about to figure it out, a scream rings out from the basement...")
-playerLocation4      = ("You rush down the satirs, nearly missing one and twisting your ankle. "
-                        "As you near the door to the basement, you see a single red balloon floating in "
-                        "front of the door. You try the door. It's locked. Just then you hear another "
-                        "scream followed by silence. You turn around to find a clown behind you.\n"
-                        "'Hello " + playerName + ", it's time to float.' the clown says laughing maniacally. "
-                        "You try to run away but it grabs you and drags you downstairs...")
+Command = ""
+pLocation = ""
+pName = input("What is your name? ")
+pScore = 0
+pStart              = ("You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n"
+                       "You move to the front door and go inside. You walk into a dark, dingy main foyer. The door suddenly slams closed behind you...\n"
+                       "You see a kitchen to your left, a dinning room to your right, and a long hallway with a window at the end in front of you...")
 
-def main():
-    startProgram()
-    playGame()
-    showCopyright()
+Kitchen             = ("You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces,\n"
+                       "and there are no counters or cabinents anywhere.")
+visitKitchen        = False
+DinningRoom         = ("You walk into a dimly lit dinning room. The table is cracked in many places, and the chairs look like they haven't been\n"
+                       "used in years.")
+visitDinningRoom    = False
+Window              = ("Window")
+visitWindow         = False
+FamilyRoom          = ("Family Room")
+visitFamilyRoom     = False
+Bathroom            = ("Bathroom")
+visitBathroom       = False
+LockDoor            = ("Locked Door")
+visitLockDoor       = False
+
+Ending              = ("You turn around to find a clown behind you. 'Hello " + pName + ", it's time to float.' the clown says laughing maniacally.\n"
+                       "You try to run away but it grabs you and drags you downstairs...")
+
 
 def startProgram():
-    global playerScore, playerLocation, playerLocationStart
+    global pScore, pLocation, pStart
         
-    print("Hello " + playerName + "! Welcome to")
+    print("Hello " + pName + "! Welcome to")
     print(" _____ _     _____           _     ___")
     print("|_   _| |   |  __ \         | |   |__ \ ")
     print("  | | | |_  | |__) |_ _ _ __| |_     ) |")
     print("  | | | __| |  ___/ _` | '__| __|   / / ")
     print(" _| |_| |_  | |  | (_| | |  | |_   / /_ ")
     print("|_____|\__| |_|   \__,_|_|   \__| |____|")
-    print("\nBy: David Siegel\n")
+    print("\nBy: David Siegel")
+    pLocation = pStart
 
 def playGame():
-    global playerScore, playerLocationStart, playerLocation, playerLocation1, playerLocation2, playerLocation3, playerLocation4
+    global Command, pScore, pStart, pLocation, Kitchen, DinningRoom, Window, FamilyRoom
+    global Bathroom, LockDoor, visitKitchen, visitDinningRoom, visitWindow, visitFamilyRoom, visitBathroom, visitLockDoor
 
-    while playerScore <= 20:
-        changeLocation()
-        playerScore += 5
+    print("\nYour score:", pScore)
+    print("\n" + pLocation, "\n")
+    print("=================================================\n")
+    changeLocation()
 
 def changeLocation():
-    global playerScore, playerLocationStart, playerLocation, playerLocation1, playerLocation2, playerLocation3, playerLocation4
+    global Command, pScore, pStart, pLocation, Kitchen, DinningRoom, Window, FamilyRoom
+    global Bathroom, LockDoor, visitKitchen, visitDinningRoom, visitWindow, visitFamilyRoom, visitBathroom, visitLockDoor
+    Command = input("Please input a command: ")
+    Command = Command.lower()
     
-    print("Your score is", playerScore, "\n")
-    if playerScore == 0:
-        playerLocation = playerLocationStart
-        print(playerLocation)
-    elif playerScore == 5:
-        playerLocation = playerLocation1
-        print(playerLocation)
-    elif playerScore == 10:
-        playerLocation = playerLocation2
-        print(playerLocation)
-    elif playerScore == 15:
-        playerLocation = playerLocation3
-        print(playerLocation)
-    elif playerScore == 20:
-        playerLocation = playerLocation4
-        print(playerLocation)
-    else:
-        return
-    input("\nPress <Enter> to continue.")
-    print("=================================================")
+    print()
+    while Command:
+        if Command == 'help':
+            print("List of commands:\nForward, Back, Right, Left, Help, Quit\n")
+            print("=================================================\n")
+            changeLocation()
+        elif Command == 'quit':
+            break
 
-def showCopyright():
+def EndGame():
+    print(Ending)
     print("\nTHE END\n")
     print("(c) 2017 David Siegel, idruless@gmail.com")
 
-main()
+
+
+startProgram()
+playGame()
+if Command != 'quit':
+    EndGame()
+
