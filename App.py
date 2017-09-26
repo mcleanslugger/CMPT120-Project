@@ -27,7 +27,7 @@ playerLocation4      = ("You rush down the satirs, nearly missing one and twisti
 
 def main():
     startProgram()
-    changeLocation()
+    playGame()
     showCopyright()
 
 def startProgram():
@@ -42,32 +42,36 @@ def startProgram():
     print("|_____|\__| |_|   \__,_|_|   \__| |____|")
     print("\nBy: David Siegel\n")
 
+def playGame():
+    global playerScore, playerLocationStart, playerLocation, playerLocation1, playerLocation2, playerLocation3, playerLocation4
+
+    while playerScore <= 20:
+        changeLocation()
+        playerScore += 5
+
 def changeLocation():
     global playerScore, playerLocationStart, playerLocation, playerLocation1, playerLocation2, playerLocation3, playerLocation4
-        
-    while playerScore <= 20:
-        print("Your score is", playerScore, "\n")
-        if playerScore == 0:
-            playerLocation = playerLocationStart
-            print(playerLocation)
-        elif playerScore == 5:
-            playerLocation = playerLocation1
-            print(playerLocation)
-        elif playerScore == 10:
-            playerLocation = playerLocation2
-            print(playerLocation)
-        elif playerScore == 15:
-            playerLocation = playerLocation3
-            print(playerLocation)
-        elif playerScore == 20:
-            playerLocation = playerLocation4
-            print(playerLocation)
-            break
-        else:
-            return
-        input("\nPress <Enter> to continue.")
-        print("=================================================")
-        playerScore += 5
+    
+    print("Your score is", playerScore, "\n")
+    if playerScore == 0:
+        playerLocation = playerLocationStart
+        print(playerLocation)
+    elif playerScore == 5:
+        playerLocation = playerLocation1
+        print(playerLocation)
+    elif playerScore == 10:
+        playerLocation = playerLocation2
+        print(playerLocation)
+    elif playerScore == 15:
+        playerLocation = playerLocation3
+        print(playerLocation)
+    elif playerScore == 20:
+        playerLocation = playerLocation4
+        print(playerLocation)
+    else:
+        return
+    input("\nPress <Enter> to continue.")
+    print("=================================================")
 
 def showCopyright():
     print("\nTHE END\n")
