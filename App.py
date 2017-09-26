@@ -68,8 +68,6 @@ def changeLocation():
                 print("List of commands:\nForward, Back, Right, Left, Help, Quit\n")
                 print("=================================================\n")
                 changeLocation()
-            elif Command == 'a':
-                print(Bathroom)
         else:
             break
 
