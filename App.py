@@ -6,9 +6,7 @@ Command = ""
 pLocation = ""
 pName = input("What is your name? ")
 pScore = 0
-pStart              = ("You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n"
-                       "You move to the front door and go inside. You walk into a dark, dingy main foyer. The door suddenly slams closed behind you...\n"
-                       "You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...")
+pStart              = ("You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...")
 
 Kitchen             = ("You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces,\n"
                        "and there are no counters or cabinents anywhere.")
@@ -20,10 +18,10 @@ Hallway             = ("You walk into a dark, narrow hallway. There are faceless
                        "You see a family room to your left, a window in front of you, and a bathroom to your right.")
 visitHallway        = False
 FamilyRoom          = ("You enter the family room. The only thing is in the room is a couch with a picture resting on it.\n"
-                       "Upon further inspection, the picture has been scratched out a replaced with", pName, "written in blood.")
+                       "Upon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.")
 visitFamilyRoom     = False
 Bathroom            = ("You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words\n"
-                       "written in the slime: Do you like to float", pName + "?")
+                       "written in the slime: Do you like to float " + pName + "?")
 visitBathroom       = False
 Window              = ("You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it,\n"
                        "and for a second you think you see something move...")
@@ -44,6 +42,9 @@ def startProgram():
     print(" _| |_| |_  | |  | (_| | |  | |_   / /_ ")
     print("|_____|\__| |_|   \__,_|_|   \__| |____|")
     print("\nBy: David Siegel")
+    print("You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n"
+          "You move to the front door and go inside. You walk inside and the door suddenly slams closed behind you...\n")
+    input("Press a key to continue")
     pLocation = pStart
 
 def playGame():
@@ -51,7 +52,7 @@ def playGame():
     global Bathroom, LockDoor, visitKitchen, visitDinningRoom, visitWindow, visitFamilyRoom, visitBathroom, visitLockDoor
 
     print("\nYour score:", pScore)
-    print("\n" + pLocation, "\n")
+    print("\n" + pLocation + "\n")
     print("=================================================\n")
     changeLocation()
 
@@ -62,12 +63,64 @@ def changeLocation():
     Command = Command.lower()
     
     print()
-    while Command:
+    while Command and Command != 'quit':
         while Command != 'quit':
             if Command == 'help':
                 print("List of commands:\nForward, Back, Right, Left, Help, Quit\n")
                 print("=================================================\n")
                 changeLocation()
+            if Command == 'forward':
+                if pLocation == pStart:
+                    pLocation = Hallway
+                    playGame()
+                elif pLocation == Hallway:
+                    pLocation = Window
+                    playGame()
+                else:
+                    print("Oops. There's a wall in the way. Try again.")
+                    changeLocation()
+            if Command == 'back':
+                if pLocation == Kitchen:
+                    pLocation = pStart
+                    playGame()
+                elif pLocation == DinningRoom:
+                    pLocation = pStart
+                    playGame()
+                elif pLocation == Hallway:
+                    pLocation = pStart
+                    playGame()
+                elif pLocation == Window:
+                    pLocation = Hallway
+                    playGame()
+                elif pLocation == FamilyRoom:
+                    pLocation = Hallway
+                    playGame()
+                elif pLocation == Bathroom:
+                    pLocation = Hallway
+                    playGame()
+                else:
+                    print("Oops. There's a wall in the way. Try again.")
+                    changeLocation()
+            if Command == 'right':
+                if pLocation == pStart:
+                    pLocation = DinningRoom
+                    playGame()
+                elif pLocation == Hallway:
+                    pLocation = Bathroom
+                    playGame()
+                else:
+                    print("Oops. There's a wall in the way. Try again.")
+                    changeLocation()
+            if Command == 'left':
+                if pLocation == pStart:
+                    pLocation = Kitchen
+                    playGame()
+                elif pLocation == Hallway:
+                    pLocation = FamilyRoom
+                    playGame()
+                else:
+                    print("Oops. There's a wall in the way. Try again.")
+                    changeLocation()
         else:
             break
 
