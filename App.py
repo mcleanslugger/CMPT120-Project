@@ -15,16 +15,20 @@ pScore = 0
 ##FamilyRoom   is Location[4]
 ##Bathroom     is Location[5]
 ##Window       is Location[6]
-##Ending       is Location[7]
+##Closet       is Location[7]
+##Porch        is Location[8]
+##Ending       is Location[9]
 
 Location = ["You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
             "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces,\n and there are no counters or cabinents anywhere.", 
             "You walk into a dimly lit dinning room. The table is cracked in many places, and the chairs look like they haven't been\nused in years.", 
             "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls.\nYou see a family room to your left, a window in front of you, and a bathroom to your right.", 
-            "You enter the family room. The only thing is in the room is a couch with a picture resting on it.\nUpon further inspection, the picture has been scratched out a replaced with", pName, " written in blood.", 
-            "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words\nwritten in the slime: Do you like to float", pName, "?",
-            "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it,\nand for a second you think you see something move...",
-            "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello", pName, ", it's time to float.\" the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you downstairs..."]
+            "You enter the family room. The only thing is in the room is a couch with a picture resting on it.\nUpon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.", 
+            "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words\nwritten in the slime: Do you like to float " + pName + "?",
+            "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it,\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
+            "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
+            "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
+            "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you downstairs..."]
 
 ##Visits List:
 ##visitKitchen     is Visits[0]
@@ -58,11 +62,10 @@ def startProgram():
     pLocation = Location[0]
 
 def playGame():
-    global Command, pScore, pLocation, Location, Visits
+    global Command, pLocation, Location, Visits
 
     while Visits[6] == False:
-        print("\nYour score:", pScore,
-              "\n" + pLocation + "\n")
+        print("\n" + pLocation + "\n")
         print("=================================================\n")
         changeLocation()
     else:
@@ -76,10 +79,20 @@ def changeLocation():
     Command = Command.lower()
     
     print()
-    if Command == 'help' or Command == 'forward' or Command == 'back' or Command == 'right' or Command == 'left':
+    if Command == 'help' or Command == 'forward' or Command == 'back' or Command == 'right' or Command == 'left' or Command == 'points' or Command == 'map':
         if Command == 'help':
-            print("List of commands:\nForward, Back, Right, Left, Help, Quit\n")
+            print("List of commands:\nForward, Back, Right, Left, Help, Quit, Points, Map\n")
             print("=================================================\n")
+            changeLocation()
+            
+        if Command == 'points':
+            print("Your score is", pScore)
+            print("=================================================\n")
+            changeLocation()
+
+        if Command == 'map':
+            from Map import showMap
+            input()
             changeLocation()
                 
         if Command == 'forward':
@@ -201,7 +214,7 @@ def changeLocation():
         
 
 def EndGame():
-    print(Location[7])
+    print(Location[9])
     print("\nTHE END\n")
     print("(c) 2017 David Siegel, idruless@gmail.com")
     quit()

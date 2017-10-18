@@ -140,7 +140,10 @@ def showMap():
     DiningRoom = Text(diningrmCenter, "Dining Room")
     DiningRoom.draw(win)
 
-
+    continueVar = False
+    input()
+    continueVar = True
+    
 
     
 showMap()
