@@ -3,7 +3,7 @@
 
 from graphics import *
 
-def main():
+def showMap():
     win = GraphWin("Game World Map", 551, 551)
 
     ##Outer Boundary
@@ -24,6 +24,10 @@ def main():
     eastLine1.draw(win)
     eastLine2.draw(win)
 
+    closetCenter = Point(89, 89)
+    Closet = Text(closetCenter, "Closet")
+    Closet.draw(win)
+
 
     ##Window Area
     southLine1 = Line(Point(188, 188), Point(246, 188))
@@ -32,6 +36,10 @@ def main():
     southLine2.setWidth(2)
     southLine1.draw(win)
     southLine2.draw(win)
+
+    windowCenter = Point(275, 89)
+    Window = Text(windowCenter, "Window")
+    Window.draw(win)
 
 
 
@@ -46,6 +54,10 @@ def main():
     westLine2.draw(win)
     southLine.draw(win)
 
+    porchCenter = Point(451, 89)
+    Porch = Text(porchCenter, "Porch")
+    Porch.draw(win)
+
 
 
     ##Family Room
@@ -59,9 +71,16 @@ def main():
     eastLine2.draw(win)
     southLine.draw(win)
 
+    familyCenter = Point(89, 275)
+    FamilyRoom = Text(familyCenter, "Family Room")
+    FamilyRoom.draw(win)
+
 
 
     ##Hallway
+    hallwayCenter = Point(275, 275)
+    Hallway = Text(hallwayCenter, "Hallway")
+    Hallway.draw(win)
 
 
 
@@ -76,6 +95,10 @@ def main():
     westLine2.draw(win)
     southLine.draw(win)
 
+    bathroomCenter = Point(451, 275)
+    Bathroom = Text(bathroomCenter, "Bathroom")
+    Bathroom.draw(win)
+
 
 
     ##Kitchen
@@ -85,6 +108,10 @@ def main():
     eastLine2.setWidth(2)
     eastLine1.draw(win)
     eastLine2.draw(win)
+
+    kitchenCenter = Point(89, 451)
+    Kitchen = Text(kitchenCenter, "Kitchen")
+    Kitchen.draw(win)
 
 
 
@@ -96,6 +123,10 @@ def main():
     northWall1.draw(win)
     northWall2.draw(win)
 
+    foyerCenter = Point(275, 451)
+    Foyer = Text(foyerCenter, "Foyer")
+    Foyer.draw(win)
+
 
     ##Dining Room
     westWall1 = Line(Point(362, 362), Point(362, 421))
@@ -105,7 +136,11 @@ def main():
     westWall1.draw(win)
     westWall2.draw(win)
 
+    diningrmCenter = Point(451, 451)
+    DiningRoom = Text(diningrmCenter, "Dining Room")
+    DiningRoom.draw(win)
+
 
 
     
-main()
+showMap()
