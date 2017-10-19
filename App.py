@@ -37,9 +37,11 @@ Location = ["You enter the foyer. You see a kitchen to your left, a dinning room
 ##visitFamilyRoom  is Visits[3]
 ##visitBathroom    is Visits[4]
 ##visitWindow      is Visits[5]
-##endVar           is Visits[6]
+##visitCloset      is Visits[6]
+##visitPorch       is Visits[7]
+##endVar           is Visits[8]
 
-Visits = [False, False, False, False, False, False, False]
+Visits = [False, False, False, False, False, False, False, False, False]
 
 
             
@@ -59,20 +61,20 @@ def startProgram():
     print("You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n"
           "You move to the front door and go inside. You walk inside and the door suddenly slams closed behind you...\n")
     input("Press a key to continue")
-    pLocation = Location[0]
+    pLocation = Location[0]     ##Foyer
 
 def playGame():
     global Command, pLocation, Location, Visits
 
-    while Visits[6] == False:
+    while Visits[8] == False:   ##Boolean variable to be able to end the game when the player's score equals 45
         print("\n" + pLocation + "\n")
         print("=================================================\n")
-        changeLocation()
+        goTo()
     else:
         print("\n" + pLocation + "\n")
         EndGame()
 
-def changeLocation():
+def goTo():
     global Command, pScore, pLocation, pName, Visits, Location
     
     Command = input("Please input a command: ")
@@ -83,134 +85,146 @@ def changeLocation():
         if Command == 'help':
             print("List of commands:\nForward, Back, Right, Left, Help, Quit, Points, Map\n")
             print("=================================================\n")
-            changeLocation()
+            goTo()
             
         if Command == 'points':
             print("Your score is", pScore)
             print("=================================================\n")
-            changeLocation()
+            goTo()
 
         if Command == 'map':
             from Map import showMap
-            input()
-            changeLocation()
+            goTo()
                 
         if Command == 'forward':
-            if pLocation == Location[0]:
-                pLocation = Location[3]
-                if Visits[2] == False:
+            if pLocation == Location[0]:        ##Foyer
+                pLocation = Location[3]         ##Moves player to Hallway
+                if Visits[2] == False:          ##Visited Hallway
                     pScore += 5
                     Visits[2] = True
-                if pScore == 30:
-                    Visits[6] = True
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[3]:
-                pLocation = Location[6]
-                if Visits[5] == False:
+            elif pLocation == Location[3]:      ##Hallway
+                pLocation = Location[6]         ##Moves player to Window
+                if Visits[5] == False:          ##Visited Window
                     pScore += 5
                     Visits[5] = True
-                if pScore == 30:
-                    Visits[6] = True
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
             else:
-                if pScore != 30:
+                if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
-                    changeLocation()
+                    goTo()
                 
         if Command == 'back':
-            if pLocation == Location[1]:
-                pLocation = Location[0]
-                if pScore == 30:
-                    Visits[6] = True
+            if pLocation == Location[1]:        ##Kitchen
+                pLocation = Location[0]         ##Moves player to Foyer
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[2]:
-                pLocation = Location[0]
-                if pScore == 30:
-                    Visits[6] = True
+            elif pLocation == Location[2]:      ##Dining Room
+                pLocation = Location[0]         ##Moves player to Foyer
                 playGame()
-            elif pLocation == Location[3]:
-                pLocation = Location[0]
-                if pScore == 30:
-                    Visits[6] = True
+            elif pLocation == Location[3]:      ##Hallway
+                pLocation = Location[0]         ##Moves player to Foyer
                 playGame()
-            elif pLocation == Location[6]:
-                pLocation = Location[3]
-                if Visits[2] == False:
-                    pScore += 5
-                    Visits[2] = True
-                if pScore == 30:
-                    Visits[6] = True
+            elif pLocation == Location[6]:      ##Window
+                pLocation = Location[3]         ##Moves player to Hallway
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[4]:
-                pLocation = Location[3]
-                if Visits[2] == False:
-                    pScore += 5
-                    Visits[2] = True
-                if pScore == 30:
-                    Visits[6] = True
+            elif pLocation == Location[4]:      ##Family Room
+                pLocation = Location[3]         ##Moves player to Hallway
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[5]:
-                pLocation = Location[3]
-                if Visits[2] == False:
-                    pScore += 5
-                    Visits[2] = True
-                if pScore == 30:
-                    Visits[6] = True
+            elif pLocation == Location[5]:      ##Bathroom
+                pLocation = Location[3]         ##Moves player to Hallway
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
+                playGame()
+            elif pLocation == Location[7]:      ##Closet
+                pLocation = Location[6]         ##Moves player to Window
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
+                playGame()
+            elif pLocation == Location[8]:      ##Porch
+                pLocation = Location[6]         ##Moves player to Window
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
             else:
-                if pScore != 30:
+                if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
-                    changeLocation()
+                    goTo()
                 
         if Command == 'right':
-            if pLocation == Location[0]:
-                pLocation = Location[2]
+            if pLocation == Location[0]:        ##Foyer
+                pLocation = Location[2]         ##Moves player to Dining Room
                 if Visits[1] == False:
                     pScore += 5
-                    Visits[1] = True
-                if pScore == 30:
-                    Visits[6] = True
+                    Visits[1] = True            ##If the player hasn't visited the Dining Room, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[3]:
-                pLocation = Location[5]
+            elif pLocation == Location[3]:      ##Hallway
+                pLocation = Location[5]         ##Moves player to Bathroom
                 if Visits[4] == False:
                     pScore += 5
-                    Visits[4] = True
-                if pScore == 30:
-                    Visits[6] = True
+                    Visits[4] = True            ##If player hasn't visited the Bathroom, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
+                playGame()
+            elif pLocation == Location[6]:      ##Window
+                pLocation = Location[8]         ##Moves player to Porch
+                if Visits[7] == False:
+                    pScore += 5
+                    Vists[7] = True             ##If the player hasn't visited the Porch, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
             else:
-                if pScore != 30:
+                if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
-                    changeLocation()
+                    goTo()
                 
         if Command == 'left':
-            if pLocation == Location[0]:
-                pLocation = Location[1]
+            if pLocation == Location[0]:        ##Foyer
+                pLocation = Location[1]         ##Moves player to Kitchen
                 if Visits[0] == False:
                     pScore += 5
-                    Visits[0] = True
-                if pScore == 30:
-                    Visits[6] = True
+                    Visits[0] = True            ##If the player hasn't visited the Kitchen, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
-            elif pLocation == Location[3]:
-                pLocation = Location[4]
+            elif pLocation == Location[3]:      ##Hallway
+                pLocation = Location[4]         ##Moves player to Family Room
                 if Visits[3] == False:
                     pScore += 5
-                    Visits[3] = True
-                if pScore == 30:
-                    Visits[6] = True
+                    Visits[3] = True            ##If the player hasn't visited the Family Room, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
+                playGame()
+            elif pLocation == Location[6]:      ##Hallway
+                pLocation = Location[7]         ##Moves player to Closet
+                if Visits[6] == False:
+                    pScore += 5
+                    Visits[6] = True            ##If player hasn't visited the Closet, adds 5 to player's score
+                if pScore == 45:
+                    Visits[8] = True            ##Sets endgame variable to true
                 playGame()
             else:
-                if pScore != 30:
+                if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
-                    changeLocation()
+                    goTo()
     elif Command == 'quit':
         quit()
     else:
         print("Please input a valid command, or type 'help' to view a list of valid commands.")
         print("=================================================\n")
-        changeLocation()
+        goTo()
         
 
 def EndGame():
