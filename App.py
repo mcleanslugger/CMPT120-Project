@@ -7,17 +7,17 @@ pLocation = ""
 pName = input("What is your name? ")
 pScore = 0
 
-##Location List:
-##pStart       is Location[0]
-##Kitchen      is Location[1]
-##DinningRoom  is Location[2]
-##Hallway      is Locaiton[3]
-##FamilyRoom   is Location[4]
-##Bathroom     is Location[5]
-##Window       is Location[6]
-##Closet       is Location[7]
-##Porch        is Location[8]
-##Ending       is Location[9]
+                    ##Location List:
+pStart = 0          ##pStart       is Location[0]
+Kitchen = 1         ##Kitchen      is Location[1]
+DiningRoom =2       ##DiningRoom   is Location[2]
+Hallway = 3         ##Hallway      is Locaiton[3]
+FamilyRoom = 4      ##FamilyRoom   is Location[4]
+Bathroom = 5        ##Bathroom     is Location[5]
+Window = 6          ##Window       is Location[6]
+Closet = 7          ##Closet       is Location[7]
+Porch = 8           ##Porch        is Location[8]
+Ending = 9          ##Ending       is Location[9]
 
 Location = ["You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
             "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces,\n and there are no counters or cabinents anywhere.", 
@@ -30,16 +30,16 @@ Location = ["You enter the foyer. You see a kitchen to your left, a dinning room
             "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
             "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you downstairs..."]
 
-##Visits List:
-##visitKitchen     is Visits[0]
-##visitDinningRoom is Visits[1]
-##visitHallway     is Visits[2]
-##visitFamilyRoom  is Visits[3]
-##visitBathroom    is Visits[4]
-##visitWindow      is Visits[5]
-##visitCloset      is Visits[6]
-##visitPorch       is Visits[7]
-##endVar           is Visits[8]
+                        ##Visits List:
+visitKitchen = 0        ##visitKitchen     is Visits[0]
+visitDiningRoom = 1     ##visitDiningRoom  is Visits[1]
+visitHallway = 2        ##visitHallway     is Visits[2]
+visitFamilyRoom = 3     ##visitFamilyRoom  is Visits[3]
+visitBathroom = 4       ##visitBathroom    is Visits[4]
+visitWindow = 5         ##visitWindow      is Visits[5]
+visitCloset = 6         ##visitCloset      is Visits[6]
+visitPorch = 7          ##visitPorch       is Visits[7]
+endVar = 8              ##endVar           is Visits[8]
 
 Visits = [False, False, False, False, False, False, False, False, False]
 
@@ -64,9 +64,9 @@ def startProgram():
     pLocation = Location[0]     ##Foyer
 
 def playGame():
-    global Command, pLocation, Location, Visits
+    global Command, pLocation, Location, Visits, endVar
 
-    while Visits[8] == False:   ##Boolean variable to be able to end the game when the player's score equals 45
+    while Visits[endVar] == False:   ##Boolean variable to be able to end the game when the player's score equals 45
         print("\n" + pLocation + "\n")
         print("=================================================\n")
         goTo()
@@ -75,7 +75,9 @@ def playGame():
         EndGame()
 
 def goTo():
-    global Command, pScore, pLocation, pName, Visits, Location
+    global Command, pScore, pLocation, pName, Visits, Location, Kitchen, pStart, DiningRoom
+    global FamilyRoom, Hallway, Bathroom, Closet, Window, Porch, visitKitchen, visitDiningRoom
+    global visitFamilyRoom, visitHallway, visitBathroom, visitCloset, visitWindow, visitPorch, endVar
     
     Command = input("Please input a command: ")
     Command = Command.lower()
@@ -97,21 +99,21 @@ def goTo():
             goTo()
                 
         if Command == 'forward':
-            if pLocation == Location[0]:        ##Foyer
-                pLocation = Location[3]         ##Moves player to Hallway
-                if Visits[2] == False:          ##Visited Hallway
+            if pLocation == Location[pStart]:
+                pLocation = Location[Hallway]
+                if Visits[visitHallway] == False:
                     pScore += 5
-                    Visits[2] = True
+                    Visits[visitHallway] = True
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[3]:      ##Hallway
-                pLocation = Location[6]         ##Moves player to Window
-                if Visits[5] == False:          ##Visited Window
+            elif pLocation == Location[Hallway]:
+                pLocation = Location[Window]
+                if Visits[visitWindow] == False:
                     pScore += 5
-                    Visits[5] = True
+                    Visits[visitWindow] = True
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
             else:
                 if pScore != 45:
@@ -119,41 +121,45 @@ def goTo():
                     goTo()
                 
         if Command == 'back':
-            if pLocation == Location[1]:        ##Kitchen
-                pLocation = Location[0]         ##Moves player to Foyer
+            if pLocation == Location[Kitchen]:
+                pLocation = Location[pStart]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[2]:      ##Dining Room
-                pLocation = Location[0]         ##Moves player to Foyer
-                playGame()
-            elif pLocation == Location[3]:      ##Hallway
-                pLocation = Location[0]         ##Moves player to Foyer
-                playGame()
-            elif pLocation == Location[6]:      ##Window
-                pLocation = Location[3]         ##Moves player to Hallway
+            elif pLocation == Location[DiningRoom]:
+                pLocation = Location[pStart]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[4]:      ##Family Room
-                pLocation = Location[3]         ##Moves player to Hallway
+            elif pLocation == Location[Hallway]:
+                pLocation = Location[pStart]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[5]:      ##Bathroom
-                pLocation = Location[3]         ##Moves player to Hallway
+            elif pLocation == Location[Window]:
+                pLocation = Location[Hallway]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[7]:      ##Closet
-                pLocation = Location[6]         ##Moves player to Window
+            elif pLocation == Location[FamilyRoom]:
+                pLocation = Location[Hallway]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
                 playGame()
-            elif pLocation == Location[8]:      ##Porch
-                pLocation = Location[6]         ##Moves player to Window
+            elif pLocation == Location[Bathroom]:
+                pLocation = Location[Hallway]
                 if pScore == 45:
-                    Visits[8] = True            ##Sets endgame variable to true
+                    Visits[endVar] = True
+                playGame()
+            elif pLocation == Location[Closet]:
+                pLocation = Location[Window]
+                if pScore == 45:
+                    Visits[endVar] = True
+                playGame()
+            elif pLocation == Location[Porch]:
+                pLocation = Location[Window]
+                if pScore == 45:
+                    Visits[endVar] = True
                 playGame()
             else:
                 if pScore != 45:
@@ -228,7 +234,8 @@ def goTo():
         
 
 def EndGame():
-    print(Location[9])
+    global Ending
+    print(Location[Ending])
     print("\nTHE END\n")
     print("(c) 2017 David Siegel, idruless@gmail.com")
     quit()
