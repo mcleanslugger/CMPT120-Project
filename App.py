@@ -1,6 +1,6 @@
 ##CMPT Semester Project
 ##Author: David Siegel
-##Version: 0.5
+##Version: 0.7
 
 Command = ""
 pLocation = ""
@@ -105,7 +105,7 @@ def goTo():
     Command = Command.lower()
     
     print()
-    if Command == 'help' or Command == 'forward' or Command == 'back' or Command == 'right' or Command == 'left' or Command == 'points' or Command == 'map':
+    if Command == 'help' or Command == 'north' or Command == 'south' or Command == 'east' or Command == 'west' or Command == 'points' or Command == 'map':
         if Command == 'help':
             print("List of commands:\nForward, Back, Right, Left, Help, Quit, Points, Map\n")
             print("=================================================\n")
@@ -120,7 +120,7 @@ def goTo():
             from Map import showMap
             playGame()
                 
-        if Command == 'forward':
+        if Command == 'north':
             if pLocation == Location[pStart]:
                 pLocation = Location[Hallway]
                 if Visits[visitHallway] == False:
@@ -144,20 +144,8 @@ def goTo():
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
                 
-        if Command == 'back':
-            if pLocation == Location[Kitchen]:
-                pLocation = Location[pStart]
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
-            elif pLocation == Location[DiningRoom]:
-                pLocation = Location[pStart]
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
-            elif pLocation == Location[Hallway]:
+        if Command == 'south':
+            if pLocation == Location[Hallway]:
                 pLocation = Location[pStart]
                 if pScore == 45:
                     Visits[endVar] = True
@@ -172,45 +160,12 @@ def goTo():
                     Visits[endVar] = True
                 moves += 1
                 playGame()
-            elif pLocation == Location[FamilyRoom]:
-                pLocation = Location[Hallway]
-                if Visits[visitHallway] == False:
-                    pScore += 5
-                    Visits[visitHallway] = True
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
-            elif pLocation == Location[Bathroom]:
-                pLocation = Location[Hallway]
-                if Visits[visitHallway] == False:
-                    pScore += 5
-                    Visits[visitHallway] = True
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
-            elif pLocation == Location[Closet]:
-                pLocation = Location[Window]
-                if Visits[visitWindow] == False:
-                    pScore += 5
-                    Visits[visitWindow] = True
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
-            elif pLocation == Location[Porch]:
-                pLocation = Location[Window]
-                if pScore == 45:
-                    Visits[endVar] = True
-                moves += 1
-                playGame()
             else:
                 if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
                 
-        if Command == 'right':
+        if Command == 'east':
             if pLocation == Location[pStart]:
                 pLocation = Location[DiningRoom]
                 if Visits[visitDiningRoom] == False:
@@ -238,12 +193,39 @@ def goTo():
                     Visits[endVar] = True
                 moves += 1
                 playGame()
+            elif pLocation == Location[Kitchen]:
+                pLocation = Location[pStart]
+                if Visits[visitKitchen] == False:
+                    pScore += 5
+                    Visits[visitKitchen] = True
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
+            elif pLocation == Location[FamilyRoom]:
+                pLocation = Location[Hallway]
+                if Visits[visitHallway] == False:
+                    pScore += 5
+                    Visits[visitHallway] = True
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
+            elif pLocation == Location[Closet]:
+                pLocation = Location[Window]
+                if Visits[visitWindow] == False:
+                    pScore += 5
+                    Visits[visitWindow] = True
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
             else:
                 if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
                 
-        if Command == 'left':
+        if Command == 'west':
             if pLocation == Location[pStart]:
                 pLocation = Location[Kitchen]
                 if Visits[visitKitchen] == False:
@@ -267,6 +249,30 @@ def goTo():
                 if Visits[visitCloset] == False:
                     pScore += 5
                     Visits[visitCloset] = True
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
+            elif pLocation == Location[DiningRoom]:
+                pLocation = Location[pStart]
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
+            elif pLocation == Location[Bathroom]:
+                pLocation = Location[Hallway]
+                if Visits[visitHallway] == False:
+                    pScore += 5
+                    Visits[visitHallway] = True
+                if pScore == 45:
+                    Visits[endVar] = True
+                moves += 1
+                playGame()
+            elif pLocation == Location[Porch]:
+                pLocation = Location[Window]
+                if Visits[visitWindow] == False:
+                    pScore += 5
+                    Visits[visitWindow] = True
                 if pScore == 45:
                     Visits[endVar] = True
                 moves += 1
