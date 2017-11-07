@@ -11,7 +11,7 @@ moves = 0
                     ##Location List:
 pStart = 0          ##pStart       is Location[0]
 Kitchen = 1         ##Kitchen      is Location[1]
-DiningRoom =2       ##DiningRoom   is Location[2]
+DiningRoom = 2      ##DiningRoom   is Location[2]
 Hallway = 3         ##Hallway      is Locaiton[3]
 FamilyRoom = 4      ##FamilyRoom   is Location[4]
 Bathroom = 5        ##Bathroom     is Location[5]
@@ -21,29 +21,29 @@ Porch = 8           ##Porch        is Location[8]
 Ending = 9          ##Ending       is Location[9]
 
 Location = ["You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
-            
+
             "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
             "\n and there are no counters or cabinents anywhere.",
-            
+
             "You walk into a dimly lit dinning room. The table is cracked in many places, " +
             "and the chairs look like they haven't been\nused in years.",
-            
+
             "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls." +
             "\nYou see a family room to your left, a window in front of you, and a bathroom to your right.",
-            
+
             "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
             "\nUpon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.",
-            
+
             "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
             "\nwritten in the slime: Do you like to float " + pName + "?",
-            
+
             "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
             "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
-            
+
             "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
-            
+
             "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
-            
+
             "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" " +
             "the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you downstairs..."]
 
@@ -61,12 +61,12 @@ endVar = 8              ##endVar           is Visits[8]
 Visits = [False, False, False, False, False, False, False, False, False]
 
 
-            
+
 ##Shows introduction and starting location
 
 def startProgram():
     global pScore, pLocation
-        
+
     print("Hello", pName + "! Welcome to")
     print(" _____ _     _____           _     ___")
     print("|_   _| |   |  __ \         | |   |__ \ ")
@@ -80,6 +80,8 @@ def startProgram():
     input("Press a key to continue")
     pScore += 5
     pLocation = Location[pStart]
+
+## Initiates game sequence
 
 def playGame():
     global Command, pLocation, Location, Visits, endVar, moves
@@ -96,21 +98,23 @@ def playGame():
             print("You have run out of moves. You lose.")
             EndGame()
 
+## Moves player around game world based on user input
+
 def goTo():
     global Command, pScore, pLocation, pName, Visits, Location, Kitchen, pStart, DiningRoom
     global FamilyRoom, Hallway, Bathroom, Closet, Window, Porch, visitKitchen, visitDiningRoom
     global visitFamilyRoom, visitHallway, visitBathroom, visitCloset, visitWindow, visitPorch, endVar, moves
-    
+
     Command = input("Please input a command: ")
     Command = Command.lower()
-    
+
     print()
     if Command == 'help' or Command == 'north' or Command == 'south' or Command == 'east' or Command == 'west' or Command == 'points' or Command == 'map':
         if Command == 'help':
             print("List of commands:\nForward, Back, Right, Left, Help, Quit, Points, Map\n")
             print("=================================================\n")
             goTo()
-            
+
         if Command == 'points':
             print("Your score is", pScore)
             print("=================================================\n")
@@ -119,7 +123,7 @@ def goTo():
         if Command == 'map':
             from Map import showMap
             playGame()
-                
+
         if Command == 'north':
             if pLocation == Location[pStart]:
                 pLocation = Location[Hallway]
@@ -143,7 +147,7 @@ def goTo():
                 if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
-                
+
         if Command == 'south':
             if pLocation == Location[Hallway]:
                 pLocation = Location[pStart]
@@ -164,7 +168,7 @@ def goTo():
                 if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
-                
+
         if Command == 'east':
             if pLocation == Location[pStart]:
                 pLocation = Location[DiningRoom]
@@ -224,7 +228,7 @@ def goTo():
                 if pScore != 45:
                     print("Oops. There's a wall in the way. Try again.")
                     goTo()
-                
+
         if Command == 'west':
             if pLocation == Location[pStart]:
                 pLocation = Location[Kitchen]
@@ -287,7 +291,8 @@ def goTo():
         print("Please input a valid command, or type 'help' to view a list of valid commands.")
         print("=================================================\n")
         goTo()
-        
+
+## Displays game ending
 
 def EndGame():
     global Ending, moves
