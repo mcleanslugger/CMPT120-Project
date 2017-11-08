@@ -45,8 +45,8 @@ Location =   [ ## North        South             East              West
 ItemLoc =   [ None, "knife",   None,         "map",   None,         "key",     None,    None,   None,  None,    None        ]
 
 
-## First "True" value is placeholder for pStart/Foyer. Other indexes are same as location values
-Visits = [True, False, False, False, False, False, False, False, False, False, False, False]
+## First "False" value is placeholder for pStart/Foyer. Other indexes are same as location values
+Visits = [False, False, False, False, False, False, False, False, False, False, False, False]
 
 
 ## Inventory List
@@ -119,9 +119,14 @@ def startProgram():
 
 ## Initiates game sequence
 def playGame():
-    global shortLoc, pStart
-    print("\nYou are at the " + shortLoc[pLocation] + "\n")
-    print("=================================================\n")
+    global Visits, Description, pLocation, shortLoc, pStart
+    if Visits[pLocation] == True:
+        print("\nYou are at the " + shortLoc[pLocation] + "\n")
+        print("=================================================\n")
+    else:
+        print("\n" + Description[pLocation] + "\n")
+        print("=================================================\n")
+    Visits[pStart] = True
     goTo()
 
 
