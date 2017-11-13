@@ -5,6 +5,7 @@
 pLocation = 0
 pName = input("What is your name? ")
 pScore = 0
+endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
 
 
 ## Locations
@@ -21,11 +22,10 @@ Closet      = 7
 Porch       = 8
 Bedroom     = 9
 HiddenRoom  = 10
-Ending      = 11
 
 
 ## Location Matrix
-Location =   [ ## North        South             East              West
+Location = [##North       South                East              West
         [ Hallway,        None   ,             DiningRoom,       Kitchen    ] ## pStart/Foyer
     ,   [ None   ,        None   ,             pStart    ,       None       ] ## Kitchen
     ,   [ None   ,        None   ,             None      ,       pStart     ] ## Dining Room
@@ -45,8 +45,13 @@ Location =   [ ## North        South             East              West
 ItemLoc =   [ None, "knife",   None,         "map",   None,         "key",     None,    None,   None,  None,    None        ]
 
 
+## Boolean variables to keep track if the player has search a certain location
+hasSearched = [ False, False, False, False, False, False, False, False, False, False ]
+
+
 ## First "False" value is placeholder for pStart/Foyer. Other indexes are same as location values
-Visits = [False, False, False, False, False, False, False, False, False, False, False, False]
+## pStart/Foyer   Kitchen  DiningRoom  Hallway  FamilyRoom  Bathroom  Window  Closet  Porch  Bedroom  HiddenRoom  Ending
+Visits = [ False, False  , False     , False  , False     , False   , False , False , False, False  , False     , False ]
 
 
 ## Inventory List
@@ -91,11 +96,7 @@ Description = [
         "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
 
         ## Hidden Room
-        "",
-
-        ## Ending
-        "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" " +
-        "the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you downstairs..."]
+        ""]
 
 
 ##Shows introduction and starting location
@@ -117,6 +118,21 @@ def startProgram():
     pLocation = pStart
 
 
+## Shows map
+def showMap():
+    print()
+    print("     ==============================================================     ")
+    print("                                                                        ")
+    print("       Hidden Room --- Closet --------- Window --------- Porch          ")
+    print("                                          ||                            ")
+    print("                                          ||                            ")
+    print("       Bedroom ----- Family Room ------ Hallway ------- Bathroom        ")
+    print("                                          ||                            ")
+    print("                                          ||                            ")
+    print("                       Kitchen -------- Foyer ------- Dining Room       ")
+    print("                                                                        ")
+    print("     ==============================================================     ") 
+
 ## Initiates game sequence
 def playGame():
     global Visits, Description, pLocation, shortLoc, pStart
@@ -127,21 +143,33 @@ def playGame():
         print("\n" + Description[pLocation] + "\n")
         print("=================================================\n")
     Visits[pStart] = True
-    goTo()
+    getInput()
 
 
 ## Moves player based on current location and user input
-def movePlayer(currLoc, direction):
+def moveTo(currLoc, direction):
     newLoc = Location[currLoc][direction]
     if newLoc != None:
         return newLoc
     else:
         print("Oops! You can't go there! Please try again.\n")
-        goTo()
+        getInput()
+
+
+## Searches the player's current location for any items
+def locSearch(currLoc):
+    global hasSearched
+    noItems = "Sorry, there are no items in this location."
+    if hasSearched[currLoc] == False:
+        hasSearched[currLoc] = True
+    if ItemLoc[currLoc] != None:
+        return ItemLoc[currLoc]
+    else:
+        return noItems
 
 
 ## Moves player around game world based on user input
-def goTo():
+def getInput():
     global pScore, pLocation, pName, Visits, Description, Kitchen, pStart, DiningRoom
     global FamilyRoom, Hallway, Bathroom, Closet, Window, Porch, Location
 
@@ -156,70 +184,101 @@ def goTo():
     print()
     if Command == 'north' or Command == 'south' or Command == 'east' or Command == 'west':
         if Command == 'north':
-            pLocation = movePlayer(pLocation, North)
+            pLocation = moveTo(pLocation, North)
             if Visits[pLocation] == False:
                 pScore += 5
                 Visits[pLocation] = True
             playGame()
 
         elif Command == 'south':
-            pLocation = movePlayer(pLocation, South)
+            pLocation = moveTo(pLocation, South)
             if Visits[pLocation] == False:
                 pScore += 5
                 Visits[pLocation] = True
             playGame()
 
         if Command == 'east':
-            pLocation = movePlayer(pLocation, East)
+            pLocation = moveTo(pLocation, East)
             if Visits[pLocation] == False:
                 pScore += 5
                 Visits[pLocation] = True
             playGame()
 
         if Command == 'west':
-            pLocation = movePlayer(pLocation, West)
+            pLocation = moveTo(pLocation, West)
             if Visits[pLocation] == False:
                 pScore += 5
                 Visits[pLocation] = True
-            playGame()
-
-    elif Command == 'map':
-        from Map import showMap
-        input("\nPress <Enter> to continue")
+            if pLocation == HiddenRoom:
+                if 'key' in Inventory:
+                    endWin()
+                else:
+                    endLose()
+            else:
+                playGame()
+            
+    elif Command == 'search':
+        print(locSearch(pLocation))
         print("\n=================================================\n")
-        goTo()
+        getInput()
+
+    elif Command == 'take':
+        if hasSearched[pLocation] == True:
+            Inventory.append(locSearch(pLocation))
+            ItemLoc.remove(locSearch(pLocation))
+        else:
+            print("You don't know if anything is there.")
+        print("\n=================================================\n")
+        getInput()
+        
+    elif Command == 'map':
+        if 'map' in Inventory:
+            showMap()
+            input("\nPress <Enter> to continue")
+        else:
+            print("You have no map to look at.")
+        print("\n=================================================\n")
+        getInput()
                     
     elif Command == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit, Points, Map, Look, Search, and Take\n")
-        print("=================================================\n")
-        goTo()
+        print("\n=================================================\n")
+        getInput()
         
     elif Command == 'look':
         print(Description[pLocation])
-        print("=================================================\n")
-        goTo()
+        print("\n=================================================\n")
+        getInput()
 
         
     elif Command == 'points':
         print("Your score is", pScore)
-        print("=================================================\n")
-        goTo()
+        print("\n=================================================\n")
+        getInput()
 
     elif Command == 'quit':
+        print(endCredits)
         quit()
         
     else:
         print("Please input a valid command, or type 'help' to view a list of valid commands.")
-        print("=================================================\n")
-        goTo()
+        print("\n=================================================\n")
+        getInput()
 
 
-## Displays game ending
-def EndGame():
-    global Description, Ending
-    print(Description[Ending])
-    print("\nTHE END\n")
-    print("(c) 2017 David Siegel, idruless@gmail.com")
+## Shows game win ending
+def endWin():
+    print("You insert the key into the door, unlock it, and enter the hidden room. Just as you are closing the door after you,\n" +
+          "you heard loud, fast footsteps coming towards you. Luckily, you shut the door in time and are now safe.")
+    print(endCredits)
+    quit()
+
+
+## Shows game lose ending
+def endLose():
+    print("You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" " +
+          "the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you into the hidden room...")
+    print(endCredits)
     quit()
 
 
