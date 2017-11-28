@@ -2,27 +2,21 @@
 ##Author: David Siegel
 ##Version: 0.7
 
-pLocation = 0
-pName = input("What is your name? ")
-pScore = 0
 endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
 
-
 ## Locations
-shortLoc = ["Foyer", "Kitchen", "Dining Room", "Hallway", "Family Room", "Bathroom", "Window", "Closet", "Porch", "Bedroom", "Hidden Room"]
-
-pStart      = 0
-Kitchen     = 1
-DiningRoom  = 2
-Hallway     = 3
-FamilyRoom  = 4
-Bathroom    = 5
-Window      = 6
-Closet      = 7
-Porch       = 8
-Bedroom     = 9
-HiddenRoom  = 10
-
+## shortLoc = ["Foyer", "Kitchen", "Dining Room", "Hallway", "Family Room", "Bathroom", "Window", "Closet", "Porch", "Bedroom", "Hidden Room"]
+##pStart      = 0
+##Kitchen     = 1
+##DiningRoom  = 2
+##Hallway     = 3
+##FamilyRoom  = 4
+##Bathroom    = 5
+##Window      = 6
+##Closet      = 7
+##Porch       = 8
+##Bedroom     = 9
+##HiddenRoom  = 10
 
 ## Location Matrix
 Location = [##North       South                East              West
@@ -39,71 +33,229 @@ Location = [##North       South                East              West
     ,   [ None   ,        None   ,             Closet    ,       None       ] ## Hidden Room
     ]
 
-
 ##           Items List
 ##           Foyer   Kitchen   Dining Room   Hallway  Family Room   Bathroom   Window   Closet  Porch  Bedroom  Hidden Room
-ItemLoc =   [ None, "knife",   None,         "map",   None,         "key",     None,    None,   None,  None,    None        ]
-
+##ItemLoc =   [ None, "knife",   None,         "map",   None,         "key",     None,    None,   None,  None,    None        ]
 
 ## Boolean variables to keep track if the player has search a certain location
-hasSearched = [ False, False, False, False, False, False, False, False, False, False ]
-
+##hasSearched = [ False, False, False, False, False, False, False, False, False, False ]
 
 ## First "False" value is placeholder for pStart/Foyer. Other indexes are same as location values
 ## pStart/Foyer   Kitchen  DiningRoom  Hallway  FamilyRoom  Bathroom  Window  Closet  Porch  Bedroom  HiddenRoom  Ending
-Visits = [ False, False  , False     , False  , False     , False   , False , False , False, False  , False     , False ]
+##Visits = [ False, False  , False     , False  , False     , False   , False , False , False, False  , False     , False ]
 
 
-## Inventory List
-Inventory = []
+class Player:
+    name = ""
+    score = 0
+    location = 0
+    moveCount = 0
+    inventory = []
+
+    def __init__(self, name, score, location, moveCount, inventory):
+        Player.name = name
+        Player.score = score
+        Player.location = location
+        Player.moveCount = moveCount
+        Player.inventory = inventory
+
+    def addScore(self):
+        self.score += 5
+
+    def addMove(self):
+        self.moveCount +=1
+
+    def getName(self):
+        self.name = input("What is your name? ")
+
+    def moveTo(self, direction):
+        newLoc = Location[Player.location][direction]
+        if newLoc != None:
+            Player.location = newLoc
+        else:
+            print("Oops! You can't go there! Please try again.\n")
+            getInput()
 
 
-Description = [
-        ## pStart/Foyer
-        "You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
+class Locale:
+    name = ""
+    value = 0
+    longDes = ""
+    shortDes = ""
+    wasVisited = False
+    wasSearched = True
+    items = ""
 
-        ## Kitchen
-        "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
-        "\n and there are no counters or cabinents anywhere.",
+    def __init__(self, name, value, longDes, shortDes, wasVisited, wasSearched, items):
+        Locale.name = name
+        Locale.value = value
+        Locale.longDes = longDes
+        Locale.shortDes = shortDes
+        Locale.wasVisited = wasVisited
+        Locale.wasSearched = wasSearched
+        Locale.items = items
 
-        ## Dining Room
-        "You walk into a dimly lit dinning room. The table is cracked in many places, " +
-        "and the chairs look like they haven't been\nused in years.",
+    def showLongName(self):
+        print(self.longDes)
 
-        ## Hallway
-        "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls." +
-        "\nYou see a family room to your left, a window in front of you, and a bathroom to your right.",
+    def showShortName(self):
+        print(self.shortDes)
 
-        ## Family Room
-        "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
-        "\nUpon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.",
+    def showItems(self):
+        print(self.items)
 
-        ## Bathroom
-        "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
-        "\nwritten in the slime: Do you like to float " + pName + "?",
+## Locations
+pStart =    Locale( "Foyer",        ## name
+                    0,              ## value used for indexing matrices
+                    "You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...", ## longDes
+                    "Foyer",        ## shortDes
+                    False,          ## wasVisited
+                    False,          ## wasSearched
+                    None            ## items
+                    )
 
-        ## Window
-        "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
-        "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
+Kitchen =   Locale( "Kitchen",      ## name
+                    1,              ## value used for indexing matrices
+                    "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
+                    "\n and there are no counters or cabinents anywhere.", ## longDes
+                    "Kitchen",      ## shortDes
+                    False,          ## wasVisited
+                    False,          ## wasSearched
+                    "knife"         ## items
+                    )
 
-        ## Closet
-        "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
+DiningRoom= Locale( "Dining Room",
+                    2,
+                    "You walk into a dimly lit dinning room. The table is cracked in many places, " +
+                    "and the chairs look like they haven't been\nused in years.",
+                    "Dining Room",
+                    False,
+                    False,
+                    None
+                    )
 
-        ## Porch
-        "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
+Hallway =   Locale( "Hallway",
+                    3,
+                    "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls." +
+                    "\nYou see a family room to your left, a window in front of you, and a bathroom to your right.",
+                    "Hallway",
+                    False,
+                    False,
+                    "map"
+                    )
 
-        ## Bedroom
-        "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
+FamilyRoom= Locale( "Family Room",
+                    4,
+                    "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
+                    "\nUpon further inspection, the picture has been scratched out a replaced with " + Player.name + " written in blood.",
+                    "Family Room",
+                    False,
+                    False,
+                    None
+                    )
 
-        ## Hidden Room
-        ""]
+Bathroom =  Locale( "Bathroom",
+                    5,
+                    "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
+                    "\nwritten in the slime: Do you like to float " + Player.name + "?",
+                    "Bathroom",
+                    False,
+                    False,
+                    "key"
+                    )
+
+Window =    Locale( "Window",
+                    6,
+                    "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
+                    "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
+                    "Window",
+                    False,
+                    False,
+                    None
+                    )
+
+Closet =    Locale( "Closet",
+                    7,
+                    "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
+                    "Closet",
+                    False,
+                    False,
+                    None
+                    )
+
+Porch =     Locale( "Porch",
+                    8,
+                    "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
+                    "Porch",
+                    False,
+                    False,
+                    None
+                    )
+
+Bedroom =   Locale( "Bedroom",
+                    9,
+                    "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
+                    "Bedroom",
+                    False,
+                    False,
+                    None
+                    )
+
+HiddenRoom= Locale( "Hidden Room",
+                    10,
+                    "",
+                    "Hidden Room",
+                    False,
+                    False,
+                    None
+                    )
+
+
+##Description = [
+##        ## pStart/Foyer
+##        "You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
+##
+##        ## Kitchen
+##        "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
+##        "\n and there are no counters or cabinents anywhere.",
+##
+##        ## Dining Room
+##        "You walk into a dimly lit dinning room. The table is cracked in many places, " +
+##        "and the chairs look like they haven't been\nused in years.",
+##
+##        ## Hallway
+##        "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls." +
+##        "\nYou see a family room to your left, a window in front of you, and a bathroom to your right.",
+##
+##        ## Family Room
+##        "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
+##        "\nUpon further inspection, the picture has been scratched out a replaced with " + Player.name + " written in blood.",
+##
+##        ## Bathroom
+##        "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
+##        "\nwritten in the slime: Do you like to float " + Player.name + "?",
+##
+##        ## Window
+##        "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
+##        "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
+##
+##        ## Closet
+##        "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
+##
+##        ## Porch
+##        "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
+##
+##        ## Bedroom
+##        "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
+##
+##        ## Hidden Room
+##        ""]
 
 
 ##Shows introduction and starting location
 def startProgram():
-    global pScore, pLocation, pStart, Description
-
-    print("Hello", pName + "! Welcome to")
+    Player.getName(Player)
+    print("Hello", Player.name + "! Welcome to")
     print(" _____ _     _____           _     ___")
     print("|_   _| |   |  __ \         | |   |__ \ ")
     print("  | | | |_  | |__) |_ _ _ __| |_     ) |")
@@ -114,9 +266,9 @@ def startProgram():
     print("You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n"
           "You move to the front door and go inside. You walk inside and the door suddenly slams closed behind you...\n")
     input("Press a key to continue")
-    pScore += 5
-    pLocation = pStart
 
+    Player.addScore(Player)
+    Player.changeLocation(Player, pStart)
 
 ## Shows map
 def showMap():
@@ -131,18 +283,18 @@ def showMap():
     print("                                          ||                            ")
     print("                       Kitchen -------- Foyer ------- Dining Room       ")
     print("                                                                        ")
-    print("     ==============================================================     ") 
+    print("     ==============================================================     ")
 
 ## Initiates game sequence
 def playGame():
-    global Visits, Description, pLocation, shortLoc, pStart
-    if Visits[pLocation] == True:
-        print("\nYou are at the " + shortLoc[pLocation] + "\n")
+    global Visits, Description
+    if Player.location.wasVisited == True:
+        print("\nYou are at the " + Locale.shortDes + "\n")
         print("=================================================\n")
     else:
-        print("\n" + Description[pLocation] + "\n")
+        print("\n" + Player.location.longDes + "\n")
         print("=================================================\n")
-    Visits[pStart] = True
+    Player.location.wasVisited = True
     getInput()
 
 
@@ -158,12 +310,11 @@ def moveTo(currLoc, direction):
 
 ## Searches the player's current location for any items
 def locSearch(currLoc):
-    global hasSearched
     noItems = "Sorry, there are no items in this location."
-    if hasSearched[currLoc] == False:
-        hasSearched[currLoc] = True
-    if ItemLoc[currLoc] != None:
-        return ItemLoc[currLoc]
+    if currLoc.wasSearched == False:
+        currLoc.wasSearched = True
+    if currLoc.items != None:
+        return currLoc.items
     else:
         return noItems
 
@@ -216,9 +367,9 @@ def getInput():
                     endLose()
             else:
                 playGame()
-            
+
     elif Command == 'search':
-        print(locSearch(pLocation))
+        print(locSearch(Player.location))
         print("\n=================================================\n")
         getInput()
 
@@ -230,7 +381,7 @@ def getInput():
             print("You don't know if anything is there.")
         print("\n=================================================\n")
         getInput()
-        
+
     elif Command == 'map':
         if 'map' in Inventory:
             showMap()
@@ -239,18 +390,18 @@ def getInput():
             print("You have no map to look at.")
         print("\n=================================================\n")
         getInput()
-                    
+
     elif Command == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit, Points, Map, Look, Search, and Take\n")
         print("\n=================================================\n")
         getInput()
-        
+
     elif Command == 'look':
         print(Description[pLocation])
         print("\n=================================================\n")
         getInput()
 
-        
+
     elif Command == 'points':
         print("Your score is", pScore)
         print("\n=================================================\n")
@@ -259,7 +410,7 @@ def getInput():
     elif Command == 'quit':
         print(endCredits)
         quit()
-        
+
     else:
         print("Please input a valid command, or type 'help' to view a list of valid commands.")
         print("\n=================================================\n")
