@@ -4,33 +4,6 @@
 
 endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
 
-# Locations
-# shortLoc = ["Foyer", "Kitchen", "Dining Room", "Hallway", "Family Room", "Bathroom", "Window", "Closet", "Porch", "Bedroom", "Hidden Room"]
-# pStart      = 0
-# Kitchen     = 1
-# DiningRoom  = 2
-# Hallway     = 3
-# FamilyRoom  = 4
-# Bathroom    = 5
-# Window      = 6
-# Closet      = 7
-# Porch       = 8
-# Bedroom     = 9
-# HiddenRoom  = 10
-
-# Location Matrix
-
-#           Items List
-#           Foyer   Kitchen   Dining Room   Hallway  Family Room   Bathroom   Window   Closet  Porch  Bedroom  Hidden Room
-# ItemLoc =   [ None, "knife",   None,         "map",   None,         "key",     None,    None,   None,  None,    None        ]
-
-# Boolean variables to keep track if the player has search a certain location
-# hasSearched = [ False, False, False, False, False, False, False, False, False, False ]
-
-# First "False" value is placeholder for pStart/Foyer. Other indexes are same as location values
-# pStart/Foyer   Kitchen  DiningRoom  Hallway  FamilyRoom  Bathroom  Window  Closet  Porch  Bedroom  HiddenRoom  Ending
-# Visits = [ False, False  , False     , False  , False     , False   , False , False , False, False  , False     , False ]
-
 
 class Player:
     def __init__(self, name, score, location, moveCount, inventory):
@@ -55,10 +28,19 @@ class Player:
             self.location = newLoc
         else:
             print("Oops! You can't go there! Please try again.\n")
-        getInput()
+        playGame()
+
+    def locSearch(self, currLoc):
+        noItems = "Sorry, there are no items in this location."
+        if currLoc.wasSearched == False:
+            currLoc.wasSearched = True
+        if currLoc.items != None:
+            return currLoc.items
+        else:
+            return noItems
 
 
-class Locale:
+class Locale(object):
     def __init__(self, name, value, longDes, shortDes, wasVisited, wasSearched, items):
         self.name = name
         self.value = value
@@ -68,14 +50,15 @@ class Locale:
         self.wasSearched = wasSearched
         self.items = items
 
-    def showLongName(self):
-        print(self.longDes)
 
-    def showShortName(self):
-        print(self.shortDes)
-
-    def showItems(self):
-        print(self.items)
+# <editor-fold desc="Player1">
+Player1 = Player("",
+                 0,
+                 None,
+                 0,
+                 []
+                 )
+# </editor-fold>
 
 
 # <editor-fold desc="pStart/Foyer">
@@ -85,7 +68,7 @@ pStart = Locale("pStart/Foyer",  # name
                 "Foyer",  # shortDes
                 False,  # wasVisited
                 False,  # wasSearched
-                None  # items
+                [None]  # items
                 )
 # </editor-fold>
 
@@ -97,7 +80,7 @@ Kitchen = Locale("Kitchen",  # name
                  "Kitchen",  # shortDes
                  False,  # wasVisited
                  False,  # wasSearched
-                 "knife"  # items
+                 ['knife']  # items
                  )
 # </editor-fold>
 
@@ -109,7 +92,7 @@ DiningRoom = Locale("Dining Room",
                     "Dining Room",
                     False,
                     False,
-                    None
+                    [None]
                     )
 # </editor-fold>
 
@@ -121,7 +104,7 @@ Hallway = Locale("Hallway",
                  "Hallway",
                  False,
                  False,
-                 "map"
+                 ['map']
                  )
 # </editor-fold>
 
@@ -129,11 +112,11 @@ Hallway = Locale("Hallway",
 FamilyRoom = Locale("Family Room",
                     4,
                     "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
-                    "\nUpon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.",
+                    "\nUpon further inspection, the picture has been scratched out a replaced with " + Player1.name + " written in blood.",
                     "Family Room",
                     False,
                     False,
-                    None
+                    [None]
                     )
 # </editor-fold>
 
@@ -141,11 +124,11 @@ FamilyRoom = Locale("Family Room",
 Bathroom = Locale("Bathroom",
                   5,
                   "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
-                  "\nwritten in the slime: Do you like to float " + pName + "?",
+                  "\nwritten in the slime: Do you like to float " + Player1.name + "?",
                   "Bathroom",
                   False,
                   False,
-                  "key"
+                  ['key']
                   )
 # </editor-fold>
 
@@ -157,7 +140,7 @@ Window = Locale("Window",
                 "Window",
                 False,
                 False,
-                None
+                [None]
                 )
 # </editor-fold>
 
@@ -168,7 +151,7 @@ Closet = Locale("Closet",
                 "Closet",
                 False,
                 False,
-                None
+                [None]
                 )
 # </editor-fold>
 
@@ -179,7 +162,7 @@ Porch = Locale("Porch",
                "Porch",
                False,
                False,
-               None
+               [None]
                )
 # </editor-fold>
 
@@ -190,7 +173,7 @@ Bedroom = Locale("Bedroom",
                  "Bedroom",
                  False,
                  False,
-                 None
+                 [None]
                  )
 # </editor-fold>
 
@@ -201,7 +184,7 @@ HiddenRoom = Locale("Hidden Room",
                     "Hidden Room",
                     False,
                     False,
-                    None
+                    [None]
                     )
 # </editor-fold>
 
@@ -220,56 +203,7 @@ Location = [  # North       South       East            West
     [None,                  None,       Closet,         None        ]   # Hidden Room
 ]
 
-Player1 = Player("",
-                 0,
-                 pStart,
-                 0,
-                 []
-                 )
 
-
-# Description = [
-#        ## pStart/Foyer
-#        "You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...",
-#
-#        ## Kitchen
-#        "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
-#        "\n and there are no counters or cabinents anywhere.",
-#
-#        ## Dining Room
-#        "You walk into a dimly lit dinning room. The table is cracked in many places, " +
-#        "and the chairs look like they haven't been\nused in years.",
-#
-#        ## Hallway
-#        "You walk into a dark, narrow hallway. There are faceless pictures hanging on both walls." +
-#        "\nYou see a family room to your left, a window in front of you, and a bathroom to your right.",
-#
-#        ## Family Room
-#        "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
-#        "\nUpon further inspection, the picture has been scratched out a replaced with " + pName + " written in blood.",
-#
-#        ## Bathroom
-#        "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
-#        "\nwritten in the slime: Do you like to float " + pName + "?",
-#
-#        ## Window
-#        "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
-#        "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
-#
-#        ## Closet
-#        "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
-#
-#        ## Porch
-#        "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
-#
-#        ## Bedroom
-#        "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
-#
-#        ## Hidden Room
-#        ""]
-
-
-##Shows introduction and starting location
 def startProgram():
     Player.getName(Player1)
     print("Hello", Player1.name + "! Welcome to")
@@ -306,40 +240,17 @@ def showMap():
 
 # Initiates game sequence
 def playGame():
-    if Player.location.wasVisited:
-        print("\nYou are at the " + Locale.shortDes + "\n")
+    if Player1.location.wasVisited:
+        print("\nYou are at the " + Player1.location.shortDes + "\n")
         print("=================================================\n")
     else:
-        print("\n" + Player.location.longDes + "\n")
+        print("\n" + Player1.location.longDes + "\n")
         print("=================================================\n")
-    Player.location.wasVisited = True
     getInput()
-
-
-def moveTo(currLoc, direction):
-    newLoc = Location[currLoc][direction]
-    if newLoc != None:
-        return newLoc
-    else:
-        print("Oops! You can't go there! Please try again.\n")
-        getInput()
-
-
-# Searches the player's current location for any items
-def locSearch(currLoc):
-    noItems = "Sorry, there are no items in this location."
-    if currLoc.wasSearched == False:
-        currLoc.wasSearched = True
-    if currLoc.items != None:
-        return currLoc.items
-    else:
-        return noItems
 
 
 # Moves player around game world based on user input
 def getInput():
-    global pName, pLocation
-
     North = 0
     South = 1
     East = 2
@@ -351,55 +262,63 @@ def getInput():
     print()
     if Command == 'north' or Command == 'south' or Command == 'east' or Command == 'west':
         if Command == 'north':
-            pLocation = moveTo(Player.location.name, North)
-            if Player.location.wasVisited == False:
-                Player.addScore()
-                Player.location.wasVisited = True
+            Player.moveTo(Player1, Player1.location, North)
+            if Player1.location.wasVisited == False:
+                Player1.location.wasVisited = True
+                Player.addScore(Player1)
             playGame()
 
-        elif Command == 'south':
-            pLocation = moveTo(pLocation, South)
-            if Visits[pLocation] == False:
-                pScore += 5
-                Visits[pLocation] = True
+        if Command == 'south':
+            Player.moveTo(Player1, Player1.location, South)
+            if Player1.location.wasVisited == False:
+                Player1.location.wasVisited = True
+                Player.addScore(Player1)
             playGame()
 
         if Command == 'east':
-            pLocation = moveTo(pLocation, East)
-            if Visits[pLocation] == False:
-                pScore += 5
-                Visits[pLocation] = True
+            Player.moveTo(Player1, Player1.location, East)
+            if Player1.location.wasVisited == False:
+                Player1.location.wasVisited = True
+                Player.addScore(Player1)
             playGame()
 
         if Command == 'west':
-            pLocation = moveTo(pLocation, West)
-            if Visits[pLocation] == False:
-                pScore += 5
-                Visits[pLocation] = True
-            if pLocation == HiddenRoom:
-                if 'key' in Inventory:
+            Player.moveTo(Player1, Player1.location, West)
+            if Player1.location.wasVisited == False:
+                Player1.location.wasVisited = True
+                Player.addScore(Player1)
+            if Player1.location.value == 10:
+                if 'key' in Player1.inventory:
                     endWin()
                 else:
                     endLose()
-            else:
-                playGame()
+            playGame()
 
-    elif Command == 'search':
-        print(locSearch(Player.location))
+    if Command == 'search':
+        print(Player.locSearch(Player1, Player1.location))
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'take':
-        if Player.location.hasSearched:
-            Player.inventory.append(Player.location.items)
-            Player.location.remove(Player.location.items)
+    if Command == 'take':
+        cmd = input("Enter item to take: ")
+        cmd = cmd.lower()
+        print()
+
+        if cmd in Player1.location.items:
+            if Player1.location.wasSearched:
+                Player1.inventory.append(cmd)
+                Player1.location.items.remove(cmd)
+                Player1.location.items = None
+                print("Your inventory is now: " + str(Player1.inventory))
+            else:
+                print("You don't know that is there.")
         else:
-            print("You don't know if anything is there.")
+            print("That item is not here.")
         print("\n=================================================\n")
         getInput()
 
     elif Command == 'map':
-        if 'map' in Player.inventory:
+        if 'map' in Player1.inventory:
             showMap()
             input("\nPress <Enter> to continue")
         else:
@@ -413,13 +332,12 @@ def getInput():
         getInput()
 
     elif Command == 'look':
-        print(Player.location.longDes)
+        print(Player.showLongName(Player1))
         print("\n=================================================\n")
         getInput()
 
-
     elif Command == 'points':
-        print("Your score is", pScore)
+        print("Your score is", Player1.score)
         print("\n=================================================\n")
         getInput()
 
@@ -445,11 +363,12 @@ def endWin():
 ## Shows game lose ending
 def endLose():
     print(
-        "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + pName + ", it's time to float.\" " +
+        "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + Player1.name + ", it's time to float.\" " +
         "the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you into the hidden room...")
     print(endCredits)
     quit()
 
 
 startProgram()
+Player1.location = pStart
 playGame()
