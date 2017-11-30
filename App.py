@@ -28,16 +28,16 @@ class Player:
 
     def moveTo(self, currLoc, direction):
         newLoc = Location[currLoc.value][direction]
-        if newLoc != None:
+        if newLoc is not None:
             self.location = newLoc
         else:
             print("Oops! You can't go there! Please try again.\n")
 
     def locSearch(self, currLoc):
         noItems = "Sorry, there are no items in this location."
-        if currLoc.wasSearched == False:
+        if not currLoc.wasSearched:
             currLoc.wasSearched = True
-        if currLoc.items != None:
+        if currLoc.items is not None:
             return currLoc.items
         else:
             return noItems
@@ -247,7 +247,8 @@ def startProgram():
     print("|_____|\__| |_|   \__,_|_|   \__| |____|")
     print("\nBy: David Siegel")
     print(
-        "You are in front of an abandoned house, late on Halloween night.You went there looking for your friends who ran off ahead of you.\n" +
+        "You are in front of an abandoned house, late on Halloween night. " +
+        "You went there looking for your friends who ran off ahead of you.\n" +
         "You move to the front door and go inside. You walk inside and the door suddenly slams closed behind you...\n")
     input("Press a key to continue")
 
@@ -296,19 +297,19 @@ def getInput():
     if Command[0] == 'north' or Command[0] == 'south' or Command[0] == 'east' or Command[0] == 'west':
         if Command[0] == 'north':
             Player.moveTo(Player1, Player1.location, North)
-            if Player1.location.wasVisited == False:
+            if not Player1.location.wasVisited:
                 Player.addScore(Player1)
             playGame()
 
         if Command[0] == 'south':
             Player.moveTo(Player1, Player1.location, South)
-            if Player1.location.wasVisited == False:
+            if not Player1.location.wasVisited:
                 Player.addScore(Player1)
             playGame()
 
         if Command[0] == 'east':
             Player.moveTo(Player1, Player1.location, East)
-            if Player1.location.wasVisited == False:
+            if not Player1.location.wasVisited:
                 Player.addScore(Player1)
             playGame()
 
@@ -316,7 +317,7 @@ def getInput():
             if Player1.location.value == 7:
                 if keyUsed or doorUnlocked:
                     Player.moveTo(Player1, Player1.location, West)
-                    if Player1.location.wasVisited == False:
+                    if not Player1.location.wasVisited:
                         Player.addScore(Player1)
                 else:
                     print("The door is locked.")
@@ -324,7 +325,7 @@ def getInput():
                     getInput()
             else:
                 Player.moveTo(Player1, Player1.location, West)
-                if Player1.location.wasVisited == False:
+                if not Player1.location.wasVisited:
                     Player.addScore(Player1)
             playGame()
 
@@ -421,7 +422,8 @@ def endWin():
 
 # Shows game lose ending
 def endLose():
-    print("\nYou turn on the radio and it makes a loud squawking. You look around hoping nothing or no one heard it...\n" +
+    print("\nYou turn on the radio and it makes a loud squawking. " +
+          "You look around hoping nothing or no one heard it...\n" +
           "You turn around again and you come face to face with a gruesome looking clown....\n" +
           "\"Hello " + Player1.name + ", it's time to float\" it says while dragging you towards the closet...")
     print(endCredits)
