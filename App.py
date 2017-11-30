@@ -6,6 +6,8 @@ endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
 
 keyUsed = False
 
+doorUnlocked = False
+
 
 class Player:
     def __init__(self, name, score, location, moveCount, inventory):
@@ -41,7 +43,12 @@ class Player:
             return noItems
 
     def dropItem(self, item):
-        
+        noneList = [None]
+        if Player1.location.items == noneList:
+            Player1.location.items = [str(item)]
+        else:
+            Player1.location.items.append(item)
+        Player1.inventory.remove(item)
 
 
 class Locale(object):
@@ -277,37 +284,37 @@ def playGame():
 
 # Moves player around game world based on user input
 def getInput():
+    global keyUsed
     North = 0
     South = 1
     East = 2
     West = 3
 
-    Command = input("Please input a command: ")
-    Command = Command.lower()
+    Command = input("Please input a command: ").lower().rsplit(" ")
 
     print()
-    if Command == 'north' or Command == 'south' or Command == 'east' or Command == 'west':
-        if Command == 'north':
+    if Command[0] == 'north' or Command[0] == 'south' or Command[0] == 'east' or Command[0] == 'west':
+        if Command[0] == 'north':
             Player.moveTo(Player1, Player1.location, North)
             if Player1.location.wasVisited == False:
                 Player.addScore(Player1)
             playGame()
 
-        if Command == 'south':
+        if Command[0] == 'south':
             Player.moveTo(Player1, Player1.location, South)
             if Player1.location.wasVisited == False:
                 Player.addScore(Player1)
             playGame()
 
-        if Command == 'east':
+        if Command[0] == 'east':
             Player.moveTo(Player1, Player1.location, East)
             if Player1.location.wasVisited == False:
                 Player.addScore(Player1)
             playGame()
 
-        if Command == 'west':
+        if Command[0] == 'west':
             if Player1.location.value == 7:
-                if keyUsed:
+                if keyUsed or doorUnlocked:
                     Player.moveTo(Player1, Player1.location, West)
                     if Player1.location.wasVisited == False:
                         Player.addScore(Player1)
@@ -321,22 +328,19 @@ def getInput():
                     Player.addScore(Player1)
             playGame()
 
-    elif Command == 'use':
-        itm = input("Please enter the item you wish to use: ")
-        itm.lower()
+    elif Command[0] == 'use':
 
-        if itm in Player1.inventory:
-            if itm == 'key':
+        if Command[1] in Player1.inventory:
+            if Command[1] == 'key':
                 if Player1.location.value == 7:
-                    global keyUsed
                     keyUsed = True
-                    print("You unlocked the door.")
+                    print("\nYou unlocked the door.")
                     print("\n=================================================\n")
                 else:
-                    print("You can't use that here.")
+                    print("\nYou can't use that here.")
                     print("\n=================================================\n")
                 getInput()
-            if itm == 'radio':
+            if Command[1] == 'radio':
                 if Player1.location.value == 11:
                     endWin()
                 else:
@@ -345,27 +349,23 @@ def getInput():
             print("This item is not in your inventory")
             getInput()
 
-    elif Command == 'drop':
-        itm = input("Please enter the item you'd like to drop: ")
-        itm.lower()
+    elif Command[0] == 'drop':
+        if Command[1] in Player1.inventory:
+            Player.dropItem(Player1, Command[1])
+        playGame()
 
-        if itm in Player1.inventory:
-
-
-    elif Command == 'search':
+    elif Command[0] == 'search':
         print(Player.locSearch(Player1, Player1.location))
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'take':
-        cmd = input("Enter item to take: ")
-        cmd = cmd.lower()
+    elif Command[0] == 'take':
         print()
 
-        if cmd in Player1.location.items:
+        if Command[1] in Player1.location.items:
             if Player1.location.wasSearched:
-                Player1.inventory.append(cmd)
-                Player1.location.items.remove(cmd)
+                Player1.inventory.append(Command[1])
+                Player1.location.items.remove(Command[1])
                 Player1.location.items = None
                 print("Your inventory is now: " + str(Player1.inventory))
             else:
@@ -375,7 +375,7 @@ def getInput():
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'map':
+    elif Command[0] == 'map':
         if 'map' in Player1.inventory:
             showMap()
             input("\nPress <Enter> to continue")
@@ -384,23 +384,23 @@ def getInput():
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'help':
+    elif Command[0] == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit,\n" +
               "Points, Map, Look, Search, Take, Use and Drop\n")
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'look':
-        print(Player.showLongName(Player1))
+    elif Command[0] == 'look':
+        print(Player1.location.longDes)
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'points':
+    elif Command[0] == 'points':
         print("Your score is", Player1.score)
         print("\n=================================================\n")
         getInput()
 
-    elif Command == 'quit':
+    elif Command[0] == 'quit':
         print(endCredits)
         quit()
 
@@ -413,15 +413,15 @@ def getInput():
 # Shows game win ending
 def endWin():
     print(
-        "You turn on the radio safely in the secret room behind the fridge. " +
-        "You call for help from anyone who's out there....\n Luckily for you, someone picks up and comes to save you.")
+        "\nYou turn on the radio safely in the secret room behind the fridge. " +
+        "You call for help from anyone who's out there....\nLuckily for you, someone picks up and comes to save you.")
     print(endCredits)
     quit()
 
 
 # Shows game lose ending
 def endLose():
-    print("You turn on the radio and it makes a loud squawking. You look around hoping nothing or no one heard it...\n" +
+    print("\nYou turn on the radio and it makes a loud squawking. You look around hoping nothing or no one heard it...\n" +
           "You turn around again and you come face to face with a gruesome looking clown....\n" +
           "\"Hello " + Player1.name + ", it's time to float\" it says while dragging you towards the closet...")
     print(endCredits)
