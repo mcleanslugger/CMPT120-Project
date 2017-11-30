@@ -1,8 +1,10 @@
 # CMPT Semester Project
 # Author: David Siegel
-# Version: 0.7
+# Version: 0.9
 
 endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
+
+keyUsed = False
 
 
 class Player:
@@ -28,7 +30,6 @@ class Player:
             self.location = newLoc
         else:
             print("Oops! You can't go there! Please try again.\n")
-        playGame()
 
     def locSearch(self, currLoc):
         noItems = "Sorry, there are no items in this location."
@@ -38,6 +39,9 @@ class Player:
             return currLoc.items
         else:
             return noItems
+
+    def dropItem(self, item):
+        
 
 
 class Locale(object):
@@ -64,7 +68,8 @@ Player1 = Player("",
 # <editor-fold desc="pStart/Foyer">
 pStart = Locale("pStart/Foyer",  # name
                 0,
-                "You enter the foyer. You see a kitchen to your left, a dinning room to your right, and a long hallway in front of you...", # longDes
+                "You enter the foyer. You see a kitchen to your left, a dinning room to your right,\n" +
+                "and a long hallway in front of you...",  # longDes
                 "Foyer",  # shortDes
                 False,  # wasVisited
                 False,  # wasSearched
@@ -75,8 +80,10 @@ pStart = Locale("pStart/Foyer",  # name
 # <editor-fold desc="Kitchen">
 Kitchen = Locale("Kitchen",  # name
                  1,
-                 "You walk into the kitchen. Or what's left of it... The fridge has no doors, the stove is ripped to pieces," +
-                 "\n and there are no counters or cabinets anywhere.",  # longDes
+                 "You walk into the kitchen. Or what's left of it..." +
+                 "The fridge has no doors, the stove is ripped to pieces," +
+                 "\n and there are no counters or cabinets anywhere." +
+                 "You notice something by the fridge on the west side of the room...",  # longDes
                  "Kitchen",  # shortDes
                  False,  # wasVisited
                  False,  # wasSearched
@@ -111,8 +118,9 @@ Hallway = Locale("Hallway",
 # <editor-fold desc="FamilyRoom">
 FamilyRoom = Locale("Family Room",
                     4,
-                    "You enter the family room. The only thing is in the room is a couch with a picture resting on it." +
-                    "\nUpon further inspection, the picture has been scratched out a replaced with " + Player1.name + " written in blood.",
+                    "You enter the family room. The only thing is in the room is a couch with a picture" +
+                    " resting on it.\nUpon further inspection, the picture has been scratched out " +
+                    "and replaced with " + Player1.name + " written in blood.",
                     "Family Room",
                     False,
                     False,
@@ -123,8 +131,9 @@ FamilyRoom = Locale("Family Room",
 # <editor-fold desc="Bathroom">
 Bathroom = Locale("Bathroom",
                   5,
-                  "You enter the bathroom. It is covered in grime and slime, but on the miror above the sink there are a few words" +
-                  "\nwritten in the slime: Do you like to float " + Player1.name + "?",
+                  "You enter the bathroom. It is covered in grime and slime, but on " +
+                  "the mirror above the sink there are a few words\nwritten in the slime: " +
+                  "Do you like to float " + Player1.name + "?",
                   "Bathroom",
                   False,
                   False,
@@ -135,8 +144,9 @@ Bathroom = Locale("Bathroom",
 # <editor-fold desc="Window">
 Window = Locale("Window",
                 6,
-                "You walk up to the window. The wood is cracking and the paint on the border is peeling. You look out through it," +
-                "\nand for a second you think you see something move...\nYou see a closet to your left, and a door out to the porch to your right.",
+                "You walk up to the window. The wood is cracking and the paint on the border is peeling. " +
+                "You look out through it,\nand for a second you think you see something move..." +
+                "\nYou see a closet to your left, and a door out to the porch to your right.",
                 "Window",
                 False,
                 False,
@@ -147,29 +157,32 @@ Window = Locale("Window",
 # <editor-fold desc="Closet">
 Closet = Locale("Closet",
                 7,
-                "You open the closet door, and it is filled with red balloons... You instantly get uneasy and start panicking.",
+                "You open the closet door, and it is filled with red balloons... " +
+                "You instantly get uneasy and start panicking.",
                 "Closet",
                 False,
                 False,
-                [None]
+                ['balloon']
                 )
 # </editor-fold>
 
 # <editor-fold desc="Porch">
 Porch = Locale("Porch",
                8,
-               "You walk out onto the porch, and you see that the wood railing is broken. It's so dark outside you can't see anything past the porch...",
+               "You walk out onto the porch, and you see that the wood railing is broken. " +
+               "It's so dark outside you can't see anything past the porch...",
                "Porch",
                False,
                False,
-               [None]
+               ['flashlight']
                )
 # </editor-fold>
 
 # <editor-fold desc="Bedroom">
 Bedroom = Locale("Bedroom",
                  9,
-                 "You walk into an old bedroom. You see an old four-poster bed, and a small couch in the corner. Dust has settled over the entire room.",
+                 "You walk into an old bedroom. You see an old four-poster bed, " +
+                 "and a small couch in the corner. Dust has settled over the entire room.",
                  "Bedroom",
                  False,
                  False,
@@ -180,18 +193,29 @@ Bedroom = Locale("Bedroom",
 # <editor-fold desc="HiddenRoom">
 HiddenRoom = Locale("Hidden Room",
                     10,
-                    "",
+                    "You enter the hidden room behind the closet. " +
+                    "There are no windows or any light coming into the room...",
                     "Hidden Room",
+                    False,
+                    False,
+                    ['radio']
+                    )
+# </editor-fold>
+
+# <editor-fold desc="SecretRoom">
+SecretRoom = Locale("Secret Room",
+                    11,
+                    "You slip past the fridge and into the secret room. In it ",
+                    "Secret Room",
                     False,
                     False,
                     [None]
                     )
 # </editor-fold>
 
-
 Location = [  # North       South       East            West
     [Hallway,               None,       DiningRoom,     Kitchen     ],  # pStart/Foyer
-    [None,                  None,       pStart,         None        ],  # Kitchen
+    [None,                  None,       pStart,         SecretRoom  ],  # Kitchen
     [None,                  None,       None,           pStart      ],  # Dining Room
     [Window,                pStart,     Bathroom,       FamilyRoom  ],  # Hallway
     [None,                  None,       Hallway,        Bedroom     ],  # Family Room
@@ -200,7 +224,8 @@ Location = [  # North       South       East            West
     [None,                  None,       Window,         HiddenRoom  ],  # Closet
     [None,                  None,       None,           Window      ],  # Porch
     [None,                  None,       FamilyRoom,     None        ],  # Bedroom
-    [None,                  None,       Closet,         None        ]   # Hidden Room
+    [None,                  None,       Closet,         None        ],  # Hidden Room
+    [None,                  None,       Kitchen,        None        ]   # Secret Room
 ]
 
 
@@ -233,7 +258,7 @@ def showMap():
     print("       Bedroom ----- Family Room ------ Hallway ------- Bathroom        ")
     print("                                          ||                            ")
     print("                                          ||                            ")
-    print("                       Kitchen -------- Foyer ------- Dining Room       ")
+    print("       Secret Room --- Kitchen -------- Foyer ------- Dining Room       ")
     print("                                                                        ")
     print("     ==============================================================     ")
 
@@ -246,6 +271,7 @@ def playGame():
     else:
         print("\n" + Player1.location.longDes + "\n")
         print("=================================================\n")
+        Player1.location.wasVisited = True
     getInput()
 
 
@@ -264,42 +290,74 @@ def getInput():
         if Command == 'north':
             Player.moveTo(Player1, Player1.location, North)
             if Player1.location.wasVisited == False:
-                Player1.location.wasVisited = True
                 Player.addScore(Player1)
             playGame()
 
         if Command == 'south':
             Player.moveTo(Player1, Player1.location, South)
             if Player1.location.wasVisited == False:
-                Player1.location.wasVisited = True
                 Player.addScore(Player1)
             playGame()
 
         if Command == 'east':
             Player.moveTo(Player1, Player1.location, East)
             if Player1.location.wasVisited == False:
-                Player1.location.wasVisited = True
                 Player.addScore(Player1)
             playGame()
 
         if Command == 'west':
-            Player.moveTo(Player1, Player1.location, West)
-            if Player1.location.wasVisited == False:
-                Player1.location.wasVisited = True
-                Player.addScore(Player1)
-            if Player1.location.value == 10:
-                if 'key' in Player1.inventory:
+            if Player1.location.value == 7:
+                if keyUsed:
+                    Player.moveTo(Player1, Player1.location, West)
+                    if Player1.location.wasVisited == False:
+                        Player.addScore(Player1)
+                else:
+                    print("The door is locked.")
+                    print("\n=================================================\n")
+                    getInput()
+            else:
+                Player.moveTo(Player1, Player1.location, West)
+                if Player1.location.wasVisited == False:
+                    Player.addScore(Player1)
+            playGame()
+
+    elif Command == 'use':
+        itm = input("Please enter the item you wish to use: ")
+        itm.lower()
+
+        if itm in Player1.inventory:
+            if itm == 'key':
+                if Player1.location.value == 7:
+                    global keyUsed
+                    keyUsed = True
+                    print("You unlocked the door.")
+                    print("\n=================================================\n")
+                else:
+                    print("You can't use that here.")
+                    print("\n=================================================\n")
+                getInput()
+            if itm == 'radio':
+                if Player1.location.value == 11:
                     endWin()
                 else:
                     endLose()
-            playGame()
+        else:
+            print("This item is not in your inventory")
+            getInput()
 
-    if Command == 'search':
+    elif Command == 'drop':
+        itm = input("Please enter the item you'd like to drop: ")
+        itm.lower()
+
+        if itm in Player1.inventory:
+
+
+    elif Command == 'search':
         print(Player.locSearch(Player1, Player1.location))
         print("\n=================================================\n")
         getInput()
 
-    if Command == 'take':
+    elif Command == 'take':
         cmd = input("Enter item to take: ")
         cmd = cmd.lower()
         print()
@@ -327,7 +385,8 @@ def getInput():
         getInput()
 
     elif Command == 'help':
-        print("List of commands:\nNorth, South, East, West, Help, Quit, Points, Map, Look, Search, and Take\n")
+        print("List of commands:\nNorth, South, East, West, Help, Quit,\n" +
+              "Points, Map, Look, Search, Take, Use and Drop\n")
         print("\n=================================================\n")
         getInput()
 
@@ -351,20 +410,20 @@ def getInput():
         getInput()
 
 
-## Shows game win ending
+# Shows game win ending
 def endWin():
     print(
-        "You insert the key into the door, unlock it, and enter the hidden room. Just as you are closing the door after you,\n" +
-        "you heard loud, fast footsteps coming towards you. Luckily, you shut the door in time and are now safe.")
+        "You turn on the radio safely in the secret room behind the fridge. " +
+        "You call for help from anyone who's out there....\n Luckily for you, someone picks up and comes to save you.")
     print(endCredits)
     quit()
 
 
-## Shows game lose ending
+# Shows game lose ending
 def endLose():
-    print(
-        "You hear shuffling behind you. You turn around to find a clown behind you. \"Hello " + Player1.name + ", it's time to float.\" " +
-        "the clown says laughing maniacally.\nYou try to run away but it grabs you and drags you into the hidden room...")
+    print("You turn on the radio and it makes a loud squawking. You look around hoping nothing or no one heard it...\n" +
+          "You turn around again and you come face to face with a gruesome looking clown....\n" +
+          "\"Hello " + Player1.name + ", it's time to float\" it says while dragging you towards the closet...")
     print(endCredits)
     quit()
 
