@@ -37,17 +37,19 @@ class Player:
         noItems = "Sorry, there are no items in this location."
         if not currLoc.wasSearched:
             currLoc.wasSearched = True
-        if currLoc.items is not None:
-            return currLoc.items
-        else:
+        try:
+            if None in currLoc.items:
+                return noItems
+            else:
+                return currLoc.items
+        except TypeError:
             return noItems
 
     def dropItem(self, item):
-        noneList = [None]
-        if Player1.location.items == noneList:
+        try:
+            Player1.location.items.append(str(item))
+        except AttributeError:
             Player1.location.items = [str(item)]
-        else:
-            Player1.location.items.append(item)
         Player1.inventory.remove(item)
 
 
@@ -70,7 +72,6 @@ Player1 = Player("",
                  []
                  )
 # </editor-fold>
-
 
 # <editor-fold desc="pStart/Foyer">
 pStart = Locale("pStart/Foyer",  # name
@@ -290,8 +291,12 @@ def getInput():
     South = 1
     East = 2
     West = 3
+    Command = input("Please input a command: ")
 
-    Command = input("Please input a command: ").lower().rsplit(" ")
+    try:
+        Command = Command.lower().rsplit(" ")
+    except IndexError:
+        Command = Command.lower()
 
     print()
     if Command[0] == 'north' or Command[0] == 'south' or Command[0] == 'east' or Command[0] == 'west':
@@ -330,30 +335,40 @@ def getInput():
             playGame()
 
     elif Command[0] == 'use':
-
-        if Command[1] in Player1.inventory:
-            if Command[1] == 'key':
-                if Player1.location.value == 7:
-                    keyUsed = True
-                    print("\nYou unlocked the door.")
-                    print("\n=================================================\n")
+        try:
+            if Command[1]:
+                if Command[1] in Player1.inventory and Command[1] == 'key':
+                    if Player1.location.value == 7:
+                        keyUsed = True
+                        print("\nYou unlocked the door.")
+                        print("\n=================================================\n")
+                    else:
+                        print("\nYou can't use that here.")
+                        print("\n=================================================\n")
+                    getInput()
+                    if Command[1] in Player1.inventory and Command[1] == 'radio':
+                        if Player1.location.value == 11:
+                            endWin()
+                        else:
+                            endLose()
                 else:
-                    print("\nYou can't use that here.")
-                    print("\n=================================================\n")
-                getInput()
-            if Command[1] == 'radio':
-                if Player1.location.value == 11:
-                    endWin()
-                else:
-                    endLose()
-        else:
-            print("This item is not in your inventory")
+                    print("This item is not in your inventory")
+                    getInput()
+        except IndexError:
+            print("\nPlease enter 'use' + the item you would like to use.")
+            print("\n=================================================\n")
             getInput()
 
     elif Command[0] == 'drop':
-        if Command[1] in Player1.inventory:
-            Player.dropItem(Player1, Command[1])
-        playGame()
+        try:
+            if Command[1]:
+                if Command[1] in Player1.inventory:
+                    Player.dropItem(Player1, Command[1])
+                playGame()
+        except IndexError:
+            print("\nPlease enter 'drop' + the item you would like to drop.")
+            print("\n=================================================\n")
+            getInput()
 
     elif Command[0] == 'search':
         print(Player.locSearch(Player1, Player1.location))
@@ -361,20 +376,24 @@ def getInput():
         getInput()
 
     elif Command[0] == 'take':
-        print()
-
-        if Command[1] in Player1.location.items:
-            if Player1.location.wasSearched:
-                Player1.inventory.append(Command[1])
-                Player1.location.items.remove(Command[1])
-                Player1.location.items = None
-                print("Your inventory is now: " + str(Player1.inventory))
-            else:
-                print("You don't know that is there.")
-        else:
-            print("That item is not here.")
-        print("\n=================================================\n")
-        getInput()
+        try:
+            if Command[1]:
+                if Command[1] in Player1.location.items:
+                    if Player1.location.wasSearched:
+                        Player1.inventory.append(Command[1])
+                        Player1.location.items.remove(Command[1])
+                        Player1.location.items = None
+                        print("\nYour inventory is now: " + str(Player1.inventory))
+                    else:
+                        print("You don't know that is there.")
+                else:
+                    print("That item is not here.")
+                print("\n=================================================\n")
+                getInput()
+        except IndexError:
+            print("\nPlease enter 'take' + the item you would like to take.")
+            print("\n=================================================\n")
+            getInput()
 
     elif Command[0] == 'map':
         if 'map' in Player1.inventory:
