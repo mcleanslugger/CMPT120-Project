@@ -73,6 +73,7 @@ Player1 = Player("",
                  )
 # </editor-fold>
 
+
 # <editor-fold desc="pStart/Foyer">
 pStart = Locale("pStart/Foyer",  # name
                 0,
