@@ -223,6 +223,7 @@ SecretRoom = Locale("Secret Room",
                     )
 # </editor-fold>
 
+
 Location = [  # North       South       East            West
     [Hallway,               None,       DiningRoom,     Kitchen     ],  # pStart/Foyer
     [None,                  None,       pStart,         SecretRoom  ],  # Kitchen
@@ -307,18 +308,21 @@ def getInput():
             Player.moveTo(Player1, Player1.location, North)
             if not Player1.location.wasVisited:
                 Player.addScore(Player1)
+            Player.addMove(Player1)
             playGame()
 
         if Command[0] == 'south':
             Player.moveTo(Player1, Player1.location, South)
             if not Player1.location.wasVisited:
                 Player.addScore(Player1)
+            Player.addMove(Player1)
             playGame()
 
         if Command[0] == 'east':
             Player.moveTo(Player1, Player1.location, East)
             if not Player1.location.wasVisited:
                 Player.addScore(Player1)
+            Player.addMove(Player1)
             playGame()
 
         if Command[0] == 'west':
@@ -327,6 +331,7 @@ def getInput():
                     Player.moveTo(Player1, Player1.location, West)
                     if not Player1.location.wasVisited:
                         Player.addScore(Player1)
+                        Player.addMove(Player1)
                 else:
                     print("The door is locked.")
                     print("\n=================================================\n")
@@ -335,6 +340,7 @@ def getInput():
                 Player.moveTo(Player1, Player1.location, West)
                 if not Player1.location.wasVisited:
                     Player.addScore(Player1)
+                    Player.addMove(Player1)
             playGame()
 
     elif Command[0] == 'build':
@@ -388,8 +394,10 @@ def getInput():
                     if Command[1] == 'radio':
                         if Player1.location.value == 11:
                             endWin()
+                            playAgain()
                         else:
                             endLose()
+                            playAgain()
                     else:
                         print("\nYou don't know if you can use this here.")
                         print("\n=================================================\n")
@@ -419,7 +427,7 @@ def getInput():
         print("\n=================================================\n")
         getInput()
 
-    elif Command[0] == 'inventory':
+    elif Command[0] == 'inventory':  # Shows the player's inventory
         print(Player.showInventory(Player1))
         print("\n=================================================\n")
         getInput()
@@ -428,7 +436,7 @@ def getInput():
         try:
             if Command[1]:
                 try:
-                    # Support for new items 'key putty' and 'key mold'
+                    # Support for taking the new items 'key putty' and 'key mold'
                     if Command[2]:
                         cmd1 = [Command[1], Command[2]]
                         cmd1 = ' '.join(cmd1)
@@ -442,6 +450,8 @@ def getInput():
                                 print("You don't know that is there.")
                         else:
                             print("That item is not here.")
+                        # If the player has the items to build a key,
+                        # tells the user that they are able to build the key
                         if cmd1 == 'key mold' and 'key putty' in Player1.inventory:
                             print("\nYou are now able to build a key!")
                         elif cmd1 == 'key putty' and 'key mold' in Player1.inventory:
@@ -464,8 +474,12 @@ def getInput():
             print("\nPlease enter 'take' + the item you would like to take.")
             print("\n=================================================\n")
             getInput()
+        except TypeError:
+            print("\nThere are no items at this location.")
+            print("\n=================================================\n")
+            getInput()
 
-    elif Command[0] == 'map':
+    elif Command[0] == 'map':  # Shows the map if the player has it in their inventory
         if 'map' in Player1.inventory:
             showMap()
             input("\nPress <Enter> to continue")
@@ -476,17 +490,17 @@ def getInput():
             print("\n=================================================\n")
 
     elif Command[0] == 'help':
-        print("List of commands:\nNorth, South, East, West, Help, Quit,\n" +
-              "Points, Map, Look, Search, Take, Use, Unlock, Build, Inventory and Drop\n")
+        print("List of commands:\nNorth, South, East, West, Help, Quit," +
+              "\nPoints, Map, Look, Search, Take, Use, Unlock, Build, Inventory and Drop.")
         print("\n=================================================\n")
         getInput()
 
-    elif Command[0] == 'look':
+    elif Command[0] == 'look':  # Shows the long description of the current location
         print(Player1.location.longDes)
         print("\n=================================================\n")
         getInput()
 
-    elif Command[0] == 'points':
+    elif Command[0] == 'points':  # Shows the player's score
         print("Your score is", Player1.score)
         print("\n=================================================\n")
         getInput()
@@ -506,8 +520,6 @@ def endWin():
     print(
         "\nYou turn on the radio safely in the secret room behind the fridge. " +
         "You call for help from anyone who's out there....\nLuckily for you, someone picks up and comes to save you.")
-    print(endCredits)
-    quit()
 
 
 # Shows game lose ending
@@ -515,11 +527,62 @@ def endLose():
     print("\nYou turn on the radio and it makes a loud squawking. " +
           "You look around hoping nothing or no one heard it...\n" +
           "You turn around again and you come face to face with a gruesome looking clown....\n" +
-          "\"Hello " + Player1.name + ", it's time to float\" it says while dragging you towards the closet...")
-    print(endCredits)
-    quit()
+          "\nHello " + Player1.name + ", it's time to float\" it says while dragging you towards the closet...")
 
 
-startProgram()
-Player1.location = pStart
-playGame()
+def resetGame():
+    resetPlayerData()
+    resetLocationData()
+
+
+def resetPlayerData():
+    Player1.name = ""
+    Player1.score = 0
+    Player1.location = None
+    Player1.moveCount = 0
+    Player1.inventory = []
+
+
+def resetLocationData():
+    Locations = [pStart, Kitchen, DiningRoom, Hallway, SecretRoom, Bathroom,
+                 FamilyRoom, Bedroom, Window, Porch, Closet, HiddenRoom]
+    for i in Locations:
+        i.wasVisited = False
+        i.wasSearched = False
+    # <editor-fold desc="Item reset">
+    pStart.items = [None]
+    Kitchen.items = ['knife']
+    DiningRoom.items = [None]
+    Hallway.items = ['map']
+    SecretRoom.items = [None]
+    Bathroom.items = ['key putty']
+    FamilyRoom.items = ['key mold']
+    Bedroom.items = [None]
+    Window.items = [None]
+    Porch.items = ['flashlight']
+    Closet.items = ['balloon']
+    HiddenRoom.items = ['radio']
+    # </editor-fold>
+
+
+def playAgain():
+    global doorUnlocked
+    print("\n=================================================\n")
+    cmd = str(input("Would you like to play again(yes/no)? ")).lower()
+    if cmd == 'yes':
+        resetGame()
+        doorUnlocked = False
+        print("\n=================================================\n")
+        main()
+    else:
+        print(endCredits)
+        quit()
+
+
+def main():
+    startProgram()
+    Player1.location = pStart
+    playGame()
+
+
+main()
