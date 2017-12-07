@@ -4,8 +4,6 @@
 
 endCredits = "\nTHE END\n(c) 2017 David Siegel, idruless@gmail.com"
 
-keyUsed = False
-
 doorUnlocked = False
 
 
@@ -216,7 +214,8 @@ HiddenRoom = Locale("Hidden Room",
 # <editor-fold desc="SecretRoom">
 SecretRoom = Locale("Secret Room",
                     11,
-                    "You slip past the fridge and into the secret room. In it ",
+                    "You slip past the fridge and into the secret room. As you enter, " +
+                    "you slide the fridge back to cover the entrance.",
                     "Secret Room",
                     False,
                     False,
@@ -273,6 +272,7 @@ def showMap():
     print("       Secret Room --- Kitchen -------- Foyer ------- Dining Room       ")
     print("                                                                        ")
     print("     ==============================================================     ")
+    print("\nYou are currently at the " + Player1.location.name + ".")
 
 
 # Initiates game sequence
@@ -289,7 +289,7 @@ def playGame():
 
 # Moves player around game world based on user input
 def getInput():
-    global keyUsed
+    global doorUnlocked
     North = 0
     South = 1
     East = 2
@@ -323,7 +323,7 @@ def getInput():
 
         if Command[0] == 'west':
             if Player1.location.value == 7:
-                if keyUsed or doorUnlocked:
+                if doorUnlocked:
                     Player.moveTo(Player1, Player1.location, West)
                     if not Player1.location.wasVisited:
                         Player.addScore(Player1)
@@ -339,55 +339,65 @@ def getInput():
 
     elif Command[0] == 'build':
         try:
-            if Command[1] and Command[2] and Command[3] and Command[4]:
-                cmd1 = [Command[1], Command[2]]
-                cmd1 = ' '.join(cmd1)
-                cmd2 = [Command[3], Command[4]]
-                cmd2 = ' '.join(cmd2)
-                if cmd1 in Player1.inventory:
-                    if cmd1 == 'key putty':
-                        if cmd2 == 'key mold':
-                            Player1.inventory.append('key')
-                            print("\nYour inventory is now: " + str(Player1.inventory))
-                        else:
-                            print("Sorry, you cannot combine those items.")
-                    elif cmd1 == 'key mold':
-                        if cmd2 == 'key putty':
-                            Player1.inventory.append('key')
-                            print("\nYour inventory is now: " + str(Player1.inventory))
-                        else:
-                            print("Sorry, you cannot combine those items.")
+            if Command[1] == 'key':
+                if 'key putty' in Player1.inventory and 'key mold' in Player1.inventory:
+                    Player1.inventory.append('key')
+                    Player1.inventory.remove('key putty')
+                    Player1.inventory.remove('key mold')
+                    print("\nYour inventory is now: " + str(Player1.inventory))
                 else:
-                    print("Those items are not in your inventory.")
-                Player1.inventory.remove(cmd1)
-                Player1.inventory.remove(cmd2)
-                print("\n=================================================\n")
-                getInput()
+                    print("\nYou don't have the correct items to build this.")
+            else:
+                print("\nYou can't build that.")
+            print("\n=================================================\n")
+            getInput()
         except IndexError:
             print("Please use 'build' plus two items you'd like to combine.")
+            print("\n=================================================\n")
+            getInput()
+
+    elif Command[0] == 'unlock':
+        try:
+            if Command[1]:
+                if Command[1] == 'door':
+                    if 'key' in Player1.inventory:
+                        if Player1.location.value == 7:
+                            doorUnlocked = True
+                            Player1.inventory.remove('key')
+                            print("\nYou unlocked the door.")
+                            print("\n=================================================\n")
+                        else:
+                            print("\nThat doesn't work here")
+                            print("\n=================================================\n")
+                    else:
+                        print("\nYou have nothing to unlock it with.")
+                        print("\n=================================================\n")
+                else:
+                    print("\nYou can't unlock that.")
+                    print("\n=================================================\n")
+                getInput()
+        except IndexError:
+            print("\nPlease enter 'unlock' + the item you would like to unlock.")
             print("\n=================================================\n")
             getInput()
 
     elif Command[0] == 'use':
         try:
             if Command[1]:
-                if Command[1] in Player1.inventory and Command[1] == 'key':
-                    if Player1.location.value == 7:
-                        keyUsed = True
-                        print("\nYou unlocked the door.")
-                        print("\n=================================================\n")
-                    else:
-                        print("\nYou can't use that here.")
-                        print("\n=================================================\n")
-                    getInput()
-                    if Command[1] in Player1.inventory and Command[1] == 'radio':
+                if Command[1] in Player1.inventory:
+                    if Command[1] == 'radio':
                         if Player1.location.value == 11:
                             endWin()
                         else:
                             endLose()
+                    else:
+                        print("\nYou don't know if you can use this here.")
+                        print("\n=================================================\n")
+                        getInput()
                 else:
                     print("This item is not in your inventory")
-                    getInput()
+                    print("\n=================================================\n")
+                getInput()
         except IndexError:
             print("\nPlease enter 'use' + the item you would like to use.")
             print("\n=================================================\n")
@@ -418,6 +428,7 @@ def getInput():
         try:
             if Command[1]:
                 try:
+                    # Support for new items 'key putty' and 'key mold'
                     if Command[2]:
                         cmd1 = [Command[1], Command[2]]
                         cmd1 = ' '.join(cmd1)
@@ -431,6 +442,11 @@ def getInput():
                                 print("You don't know that is there.")
                         else:
                             print("That item is not here.")
+                        if cmd1 == 'key mold' and 'key putty' in Player1.inventory:
+                            print("\nYou are now able to build a key!")
+                        elif cmd1 == 'key putty' and 'key mold' in Player1.inventory:
+                            print("\nYou are now able to build a key!")
+                # Used if player is not taking 'key putty' or 'key mold'
                 except IndexError:
                     if Command[1] in Player1.location.items:
                         if Player1.location.wasSearched:
@@ -453,10 +469,11 @@ def getInput():
         if 'map' in Player1.inventory:
             showMap()
             input("\nPress <Enter> to continue")
+            print("\n=================================================\n")
+            getInput()
         else:
             print("You have no map to look at.")
-        print("\n=================================================\n")
-        getInput()
+            print("\n=================================================\n")
 
     elif Command[0] == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit,\n" +
