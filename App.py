@@ -52,6 +52,9 @@ class Player:
             Player1.location.items = [str(item)]
         Player1.inventory.remove(item)
 
+    def showInventory(self):
+        return self.inventory
+
 
 class Locale(object):
     def __init__(self, name, value, longDes, shortDes, wasVisited, wasSearched, items):
@@ -72,7 +75,6 @@ Player1 = Player("",
                  []
                  )
 # </editor-fold>
-
 
 # <editor-fold desc="pStart/Foyer">
 pStart = Locale("pStart/Foyer",  # name
@@ -133,7 +135,7 @@ FamilyRoom = Locale("Family Room",
                     "Family Room",
                     False,
                     False,
-                    [None]
+                    ['key mold']
                     )
 # </editor-fold>
 
@@ -146,7 +148,7 @@ Bathroom = Locale("Bathroom",
                   "Bathroom",
                   False,
                   False,
-                  ['key']
+                  ['key putty']
                   )
 # </editor-fold>
 
@@ -335,6 +337,37 @@ def getInput():
                     Player.addScore(Player1)
             playGame()
 
+    elif Command[0] == 'build':
+        try:
+            if Command[1] and Command[2] and Command[3] and Command[4]:
+                cmd1 = [Command[1], Command[2]]
+                cmd1 = ' '.join(cmd1)
+                cmd2 = [Command[3], Command[4]]
+                cmd2 = ' '.join(cmd2)
+                if cmd1 in Player1.inventory:
+                    if cmd1 == 'key putty':
+                        if cmd2 == 'key mold':
+                            Player1.inventory.append('key')
+                            print("\nYour inventory is now: " + str(Player1.inventory))
+                        else:
+                            print("Sorry, you cannot combine those items.")
+                    elif cmd1 == 'key mold':
+                        if cmd2 == 'key putty':
+                            Player1.inventory.append('key')
+                            print("\nYour inventory is now: " + str(Player1.inventory))
+                        else:
+                            print("Sorry, you cannot combine those items.")
+                else:
+                    print("Those items are not in your inventory.")
+                Player1.inventory.remove(cmd1)
+                Player1.inventory.remove(cmd2)
+                print("\n=================================================\n")
+                getInput()
+        except IndexError:
+            print("Please use 'build' plus two items you'd like to combine.")
+            print("\n=================================================\n")
+            getInput()
+
     elif Command[0] == 'use':
         try:
             if Command[1]:
@@ -376,21 +409,41 @@ def getInput():
         print("\n=================================================\n")
         getInput()
 
+    elif Command[0] == 'inventory':
+        print(Player.showInventory(Player1))
+        print("\n=================================================\n")
+        getInput()
+
     elif Command[0] == 'take':
         try:
             if Command[1]:
-                if Command[1] in Player1.location.items:
-                    if Player1.location.wasSearched:
-                        Player1.inventory.append(Command[1])
-                        Player1.location.items.remove(Command[1])
-                        Player1.location.items = None
-                        print("\nYour inventory is now: " + str(Player1.inventory))
+                try:
+                    if Command[2]:
+                        cmd1 = [Command[1], Command[2]]
+                        cmd1 = ' '.join(cmd1)
+                        if cmd1 in Player1.location.items:
+                            if Player1.location.wasSearched:
+                                Player1.inventory.append(cmd1)
+                                Player1.location.items.remove(cmd1)
+                                Player1.location.items = None
+                                print("\nYour inventory is now: " + str(Player1.inventory))
+                            else:
+                                print("You don't know that is there.")
+                        else:
+                            print("That item is not here.")
+                except IndexError:
+                    if Command[1] in Player1.location.items:
+                        if Player1.location.wasSearched:
+                            Player1.inventory.append(Command[1])
+                            Player1.location.items.remove(Command[1])
+                            Player1.location.items = None
+                            print("\nYour inventory is now: " + str(Player1.inventory))
+                        else:
+                            print("You don't know that is there.")
                     else:
-                        print("You don't know that is there.")
-                else:
-                    print("That item is not here.")
-                print("\n=================================================\n")
-                getInput()
+                        print("That item is not here.")
+            print("\n=================================================\n")
+            getInput()
         except IndexError:
             print("\nPlease enter 'take' + the item you would like to take.")
             print("\n=================================================\n")
@@ -407,7 +460,7 @@ def getInput():
 
     elif Command[0] == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit,\n" +
-              "Points, Map, Look, Search, Take, Use and Drop\n")
+              "Points, Map, Look, Search, Take, Use, Unlock, Build, Inventory and Drop\n")
         print("\n=================================================\n")
         getInput()
 
