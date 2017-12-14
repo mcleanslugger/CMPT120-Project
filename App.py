@@ -484,10 +484,10 @@ def getInput():
             showMap()
             input("\nPress <Enter> to continue")
             print("\n=================================================\n")
-            getInput()
         else:
             print("You have no map to look at.")
             print("\n=================================================\n")
+        getInput()
 
     elif Command[0] == 'help':
         print("List of commands:\nNorth, South, East, West, Help, Quit," +
